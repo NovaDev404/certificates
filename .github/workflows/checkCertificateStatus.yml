@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
-      - name: Install jq (JSON parser)
+      - name: Install jq
         run: |
           sudo apt-get update
           sudo apt-get install -y jq
@@ -29,22 +29,20 @@ jobs:
           README_PATH: "README.md"
         run: |
           set -euo pipefail
-
           README="${README_PATH}"
           API="${API_URL}"
           CHANGED=0
           TMPDIR="$(mktemp -d)"
           trap 'rm -rf "$TMPDIR"' EXIT
 
-          echo "Scanning top-level directories for certificates..."
+          echo "Scanning top-level directories for certificate bundles..."
 
           for d in */; do
-            # strip trailing slash
             dirname="${d%/}"
 
             # skip common repo/system dirs
             case "$dirname" in
-              .github|.git|node_modules|.vscode|.github-actions) continue ;;
+              .github|.git|node_modules|.vscode) continue ;;
             esac
 
             p12="$dirname/${dirname}.p12"
@@ -54,41 +52,55 @@ jobs:
             if [[ -f "$p12" && -f "$profile" && -f "$passfile" ]]; then
               echo "Found cert bundle for: $dirname"
 
-              # read password (trim whitespace/newline)
+              # read first line of password (strip CR)
               password="$(tr -d '\r' < "$passfile" | sed -n '1p')"
 
-              respfile="$TMPDIR/resp_${dirname}.json"
-
-              # POST to API
+              respfile="$TMPDIR/resp_${dirname}.body"
               echo " -> uploading to checker API..."
-              curl -s -X POST "$API" \
-                -F "file=@${p12}" \
-                -F "secondary_file=@${profile}" \
-                -F "password=${password}" \
-                -H "Accept: application/json" \
-                -o "$respfile" ||
-                { echo "curl failed for $dirname"; continue; }
+
+              # run curl and capture HTTP status; handle network errors gracefully
+              if ! http_status=$(curl -s -S -o "$respfile" -w '%{http_code}' -X POST "$API" \
+                    -F "file=@${p12}" \
+                    -F "secondary_file=@${profile}" \
+                    -F "password=${password}" \
+                    -H "Accept: application/json"); then
+                echo "   Network/curl error when uploading for $dirname — skipping."
+                echo "   (see response body if any):"
+                cat "$respfile" || true
+                continue
+              fi
+
+              # If API returned non-200, show body and skip
+              if [[ "$http_status" -lt 200 || "$http_status" -ge 300 ]]; then
+                echo "   HTTP $http_status returned for $dirname — skipping."
+                echo "   Response body:"
+                cat "$respfile" || true
+                continue
+              fi
+
+              # Validate that the response is JSON before using jq
+              if ! jq -e . "$respfile" >/dev/null 2>&1; then
+                echo "   Response for $dirname is not valid JSON — skipping. Response body:"
+                sed -n '1,200p' "$respfile" || true
+                continue
+              fi
 
               success=$(jq -r 'if has("success") then .success else false end' "$respfile")
-
               if [[ "$success" != "true" ]]; then
                 err_msg=$(jq -r '.error.message // "unknown error"' "$respfile")
                 echo "   API returned failure for $dirname: $err_msg"
                 continue
               fi
 
-              # ensure comparison_data exists & certificates_match true
-              certs_match=$(jq -r 'try .data.certificate.comparison_data.certificates_match // false' "$respfile")
-
+              certs_match=$(jq -r '(.data.certificate.comparison_data.certificates_match) // false' "$respfile")
               if [[ "$certs_match" != "true" ]]; then
                 echo "   Certificates DO NOT match for $dirname — skipping README update."
                 continue
               fi
 
-              # extract data
+              # extract fields (with safe fallbacks)
               cert_type=$(jq -r '.data.certificate.type // "Unknown Certificate"' "$respfile")
               status_raw=$(jq -r '.data.certificate.certificate_status.status // "Unknown"' "$respfile")
-              # map to README icons
               if [[ "${status_raw,,}" == *"sign"* || "${status_raw,,}" == "signed" ]]; then
                 status_icon="**✅ Signed**"
               else
@@ -98,31 +110,29 @@ jobs:
               valid_from_iso=$(jq -r '.data.certificate.certificate_info.validity_period.valid_from // empty' "$respfile")
               valid_to_iso=$(jq -r '.data.certificate.certificate_info.validity_period.valid_to // empty' "$respfile")
 
-              # fallback to empty if missing
+              # format dates to DD/MM/YY HH:MM if possible
               valid_from_fmt=""
               valid_to_fmt=""
               if [[ -n "$valid_from_iso" ]]; then
-                # convert to dd/mm/yy HH:MM
-                valid_from_fmt=$(date -d "$valid_from_iso" +"%d/%m/%y %H:%M" 2>/dev/null || date -u -d "$valid_from_iso" +"%d/%m/%y %H:%M" 2>/dev/null || echo "$valid_from_iso")
+                valid_from_fmt=$(date -d "$valid_from_iso" +"%d/%m/%y %H:%M" 2>/dev/null || echo "$valid_from_iso")
               fi
               if [[ -n "$valid_to_iso" ]]; then
-                valid_to_fmt=$(date -d "$valid_to_iso" +"%d/%m/%y %H:%M" 2>/dev/null || date -u -d "$valid_to_iso" +"%d/%m/%y %H:%M" 2>/dev/null || echo "$valid_to_iso")
+                valid_to_fmt=$(date -d "$valid_to_iso" +"%d/%m/%y %H:%M" 2>/dev/null || echo "$valid_to_iso")
               fi
 
               echo "   API success & certs match. Type: $cert_type, Status: $status_raw, From: $valid_from_fmt, To: $valid_to_fmt"
 
-              # Update README: replace the entire line that starts with "| <dirname> |"
-              # Keep the company name exactly as it appears in the README (directory name must match the left column text)
+              # Replace the README table row whose first column equals the directory name.
+              # Use awk with a robust regex to find a line beginning with "| <dirname> |"
               tmp_readme="$TMPDIR/README_${dirname}.md"
               awk -v name="$dirname" -v type="$cert_type" -v status="$status_icon" -v vf="$valid_from_fmt" -v vt="$valid_to_fmt" \
-                'BEGIN{found=0; pattern="| " name " |"} \
-                 { if (substr($0,1,length(pattern)) == pattern) { printf("| %s | %s | %s | %s | %s |\n", name, type, status, vf, vt); found=1 } else print $0 } \
+                'BEGIN{found=0; pattern="^\\|[[:space:]]*" name "[[:space:]]*\\|"} \
+                 { if ($0 ~ pattern) { printf("| %s | %s | %s | %s | %s |\n", name, type, status, vf, vt); found=1 } else print $0 } \
                  END { if (found==0) exit 2 }' "$README" > "$tmp_readme" && mv "$tmp_readme" "$README" || \
-                 ( echo "   WARNING: did not find an existing README row for '$dirname'. Skipping edit for this entry." && continue )
+                 ( echo "   WARNING: did not find an existing README row for '\''$dirname'\''. Skipping edit for this entry." && continue )
 
               CHANGED=1
               echo "   README row updated for $dirname"
-
             fi
           done
 
@@ -131,7 +141,7 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add "$README"
-            # if there's nothing to commit git will exit non-zero; handle gracefully
+            # If there are staged changes, commit & push
             if git diff --staged --quiet; then
               echo "No staged changes to commit."
             else
