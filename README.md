@@ -12,11 +12,13 @@ Sources for these certificates include: [Loyahdev](https://github.com/loyahdev/c
 | Tianjin University of Commerce | Enterprise Certificate | **❌ Revoked** | 26/02/24 01:15 | 25/02/27 01:15 |
 | China National Heavy Duty Truck Group Co., Ltd. | Enterprise Certificate | **❌ Revoked** | 30/10/23 02:41 | 29/10/26 02:41 |
 | BMW Brilliance Automotive Ltd. | Enterprise Certificate | **❌ Revoked** | 20/02/23 02:03 | 19/02/26 02:03 |
+| China Telecommunications Corporation | Enterprise Certificate | **❌ Revoked** | 19/08/22 15:33 | 18/08/25 15:33 |
 | Mylan Inc. | Enterprise Certificate | **❌ Revoked** | 12/01/23 05:40 | 11/01/26 05:40 |
 
 ---
 
 # Updates
+**11-12-25** Add the China Telecommunications Corporation certificate (2022). 
 **9-12-25** Sadly the Emirates Telecommunications certificate has been revoked! 😭
 
 ---
