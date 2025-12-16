@@ -15,9 +15,6 @@ View the certificate manager [here](https://prostore-ios.github.io/web/cert.html
 | Guangzhou Huahan Educational & Technology Co., Ltd. | Enterprise Certificate | ❌ Revoked | 2025-01-24 11:35:31 GMT+08:00 | 2026-01-24 11:35:31 GMT+08:00 | [Download](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2FProStore-iOS%2Fcertificates%2Ftree%2Fmain%2FGuangzhou%20Huahan%20Educational%20%26%20Technology%20Co.%2C%20Ltd.) |
 | Tianjin University of Commerce | Enterprise Certificate | ❌ Revoked | 2025-03-17 20:52:01 GMT+08:00 | 2026-03-17 20:52:01 GMT+08:00 | [Download](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2FProStore-iOS%2Fcertificates%2Ftree%2Fmain%2FTianjin%20University%20of%20Commerce) |
 | China National Heavy Duty Truck Group Co., Ltd. | Enterprise Certificate | ❌ Revoked | 2025-04-11 16:48:04 GMT+08:00 | 2026-04-11 16:48:04 GMT+08:00 | [Download](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2FProStore-iOS%2Fcertificates%2Ftree%2Fmain%2FChina%20National%20Heavy%20Duty%20Truck%20Group%20Co.%2C%20Ltd.) |
-| BMW Brilliance Automotive Ltd. | Enterprise Certificate | ❌ Revoked | 2024-09-12 17:29:51 GMT+08:00 | 2025-09-12 17:29:51 GMT+08:00 | [Download](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2FProStore-iOS%2Fcertificates%2Ftree%2Fmain%2FBMW%20Brilliance%20Automotive%20Ltd.) |
-| China Telecommunications Corporation | Enterprise Certificate | ❌ Revoked | 2022-09-02 15:36:31 GMT+08:00 | 2023-09-02 15:36:31 GMT+08:00 | [Download](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2FProStore-iOS%2Fcertificates%2Ftree%2Fmain%2FChina%20Telecommunications%20Corporation) |
-| Mylan Inc. | Enterprise Certificate | ❌ Revoked | 2023-01-12 19:24:17 GMT+08:00 | 2024-01-12 19:24:17 GMT+08:00 | [Download](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2FProStore-iOS%2Fcertificates%2Ftree%2Fmain%2FMylan%20Inc.) |
 
 ---
 
