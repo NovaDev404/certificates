@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Updated certificate checker + README updater
-Fix: correctly treat "🟢Good", "Good", "Valid", "Active" etc. as valid/signed
-and avoid marking them as revoked just because they include emoji or different wording.
-"""
+# updated_cert_check.py
+# Full updated script to prefer top-level Certificate Status (e.g. "🟢Good")
+# and robustly normalise status values including emoji like "🟢Match With P12".
 
 import re
 import requests
+import os
+import json
 from bs4 import BeautifulSoup, NavigableString, Tag
 from pathlib import Path
 from datetime import datetime
@@ -15,9 +14,6 @@ import sys
 
 BASE_URL = "https://check-p12.applep12.com/"
 
-# -------------------------
-# Helper / parsing utils
-# -------------------------
 def get_token(session):
     """Get the CSRF token from the check page."""
     r = session.get(BASE_URL, timeout=20)
@@ -36,18 +32,16 @@ def submit_check(session, token, p12_path, p12_password, mp_path):
         "Origin": "https://check-p12.applep12.com",
     }
 
-    # Use context managers to ensure files are closed
-    with open(p12_path, "rb") as p12_file, open(mp_path, "rb") as mp_file:
-        files = [
-            ("P12File", (p12_path.name, p12_file, "application/x-pkcs12")),
-            ("P12PassWord", (None, p12_password)),
-            ("MobileProvisionFile", (mp_path.name, mp_file, "application/octet-stream")),
-            ("__RequestVerificationToken", (None, token)),
-        ]
+    files = [
+        ("P12File", (p12_path.name, open(p12_path, "rb"), "application/x-pkcs12")),
+        ("P12PassWord", (None, p12_password)),
+        ("MobileProvisionFile", (mp_path.name, open(mp_path, "rb"), "application/octet-stream")),
+        ("__RequestVerificationToken", (None, token)),
+    ]
 
-        r = session.post(BASE_URL, files=files, headers=headers, timeout=120)
-        r.raise_for_status()
-        return r.text
+    r = session.post(BASE_URL, files=files, headers=headers, timeout=60)
+    r.raise_for_status()
+    return r.text
 
 def split_kv(line):
     """Split on either ASCII colon ':' or full-width '：' and return (key, value)."""
@@ -64,7 +58,7 @@ def clean_value(raw):
     return v
 
 def lines_from_alert_div(alert_div):
-    """Extract text lines from the alert div in the HTML response."""
+    """Extract text lines from the alert div, preserving order and br-separated blocks."""
     lines = []
     cur = []
     for node in alert_div.children:
@@ -80,6 +74,7 @@ def lines_from_alert_div(alert_div):
                         lines.append(joined)
                 cur = []
             else:
+                # tag may contain text and emoji spans
                 txt = node.get_text(" ", strip=True)
                 if txt:
                     cur.append(txt)
@@ -87,37 +82,66 @@ def lines_from_alert_div(alert_div):
         joined = " ".join(cur).strip()
         if joined:
             lines.append(joined)
+    # Normalise whitespace
     return [re.sub(r'\s+', ' ', ln).strip() for ln in lines if ln.strip()]
 
 def parse_html(html):
-    """Parse the HTML response from the certificate checker and extract relevant fields."""
+    """
+    Parse the HTML response from the certificate checker.
+    Returns a dict containing top-level certificate status and binding certificate status, plus MP dates.
+    """
     soup = BeautifulSoup(html, "html.parser")
+    
     alert_div = soup.find(lambda tag: tag.name == "div" and tag.get("class") and any("alert" in c for c in tag.get("class")))
     if not alert_div:
         return {"error": "No certificate info found in response"}
+    
     lines = lines_from_alert_div(alert_div)
-
+    
     data = {
         "certificate": {},
         "mobileprovision": {},
         "binding_certificate_1": {},
     }
-
-    def find_index(prefixes, start=0):
-        for i in range(start, len(lines)):
+    
+    def find_index(prefixes, start=0, end=None):
+        if end is None:
+            end = len(lines)
+        for i in range(start, end):
             for p in prefixes:
                 if lines[i].startswith(p):
                     return i
         return None
 
+    # Find main certificate block start (CertName)
     cert_idx = find_index(["CertName:", "CertName："])
-    mp_idx = find_index(["MP Name:", "MP Name：", "MP Name"], start=0)
-    binding_idx = find_index(["Binding Certificates:", "Binding Certificates：", "Binding Certificates"], start=(mp_idx or 0))
-
-    # Parse mobileprovision block (dates come from here)
+    # Find MP block start (MP Name)
+    mp_idx = find_index(["MP Name:", "MP Name：", "MP Name"])
+    # binding certificates start (search from mp_idx)
+    binding_idx = None
     if mp_idx is not None:
-        end = binding_idx if binding_idx is not None else len(lines)
-        for ln in lines[mp_idx:end]:
+        binding_idx = find_index(["Binding Certificates:", "Binding Certificates："], start=mp_idx, end=len(lines))
+    
+    # --- Parse top-level certificate block (between cert_idx and mp_idx) ---
+    if cert_idx is not None:
+        cert_block_end = mp_idx if mp_idx is not None else (binding_idx if binding_idx is not None else len(lines))
+        for ln in lines[cert_idx:cert_block_end]:
+            k, v = split_kv(ln)
+            v = clean_value(v)
+            lk = k.lower()
+            if lk.startswith("certname"):
+                data["certificate"]["name"] = v
+            elif lk.startswith("effective date"):
+                data["certificate"]["effective"] = v
+            elif lk.startswith("expiration date"):
+                data["certificate"]["expiration"] = v
+            elif lk.startswith("certificate status"):
+                data["certificate"]["status"] = v
+
+    # --- Parse mobileprovision block (dates come from here) ---
+    if mp_idx is not None:
+        mp_block_end = binding_idx if binding_idx is not None else len(lines)
+        for ln in lines[mp_idx:mp_block_end]:
             k, v = split_kv(ln)
             v = clean_value(v)
             lk = k.lower()
@@ -128,371 +152,340 @@ def parse_html(html):
             elif lk.startswith("expiration date"):
                 data["mobileprovision"]["expiration"] = v
 
-    # Parse certificate status (inside binding certificates block)
+    # --- Parse binding certificate 1 block (fallback if top-level missing) ---
     if binding_idx is not None:
-        cert1_idx = find_index(["Certificate 1:", "Certificate 1：", "Certificate 1"], start=binding_idx)
+        cert1_idx = find_index(["Certificate 1:", "Certificate 1：", "Certificate 1"], start=binding_idx, end=len(lines))
         if cert1_idx is not None:
-            end = find_index(["Certificate 2:", "Certificate 2：", "Certificate 2"], start=cert1_idx+1) or len(lines)
+            # find next certificate 2 or end
+            cert2_idx = find_index(["Certificate 2:", "Certificate 2：", "Certificate 2"], start=cert1_idx+1, end=len(lines))
+            end = cert2_idx if cert2_idx is not None else len(lines)
             for ln in lines[cert1_idx+1:end]:
                 k, v = split_kv(ln)
                 v = clean_value(v)
                 lk = k.lower()
                 if lk.startswith("certificate status"):
                     data["binding_certificate_1"]["status"] = v
-
-    # Fallback: sometimes the page prints certificate info straight without those markers
-    # We'll try to search for "Certificate Status" anywhere
-    if not data["binding_certificate_1"].get("status"):
-        for ln in lines:
-            if ln.lower().startswith("certificate status"):
-                _, v = split_kv(ln)
-                data["binding_certificate_1"]["status"] = clean_value(v)
-                break
+                elif lk.startswith("certificate number"):
+                    # we don't strictly need the number but keep it if present
+                    if "number" not in data["binding_certificate_1"]:
+                        data["binding_certificate_1"]["number"] = v
 
     return data
 
+def strip_emoji_and_misc(s):
+    """Remove common emoji, bullets, and extra unicode markers, keep letters/numbers and spaces."""
+    if not s:
+        return ""
+    # Remove coloured circle emojis like 🟢 🟡 🔴 and other common single glyphs
+    s = re.sub(r'[\U0001F300-\U0001F6FF\U0001F900-\U0001F9FF\U00002600-\U00002BFF]+', '', s)
+    # Remove other stray symbols
+    s = re.sub(r'[^\w\s\-\._/():,]', '', s)
+    return s.strip()
+
+def normalise_status(raw_status):
+    """
+    Turn raw status (e.g. "🟢Good", "🟢Match With P12", "Revoked") into canonical categories:
+    'Valid', 'Revoked', 'Expired', or 'Unknown'. Also returns cleaned raw for debugging.
+    """
+    if not raw_status:
+        return "Unknown", raw_status or ""
+    cleaned = strip_emoji_and_misc(raw_status).lower()
+    # direct keyword heuristics
+    if any(k in cleaned for k in ("revok", "revoked")):
+        return "Revoked", raw_status
+    if any(k in cleaned for k in ("expired", "expire")):
+        return "Expired", raw_status
+    if any(k in cleaned for k in ("good", "valid", "active", "match", "match with p12", "provisions all devices")):
+        # "match" might be binding match but still indicates the cert matches the p12; treat as valid fallback only later
+        return "Valid", raw_status
+    # Unknown
+    return "Unknown", raw_status
+
 def convert_to_dd_mm_yy(date_str):
-    """Convert date to DD/MM/YY HH:mm format if possible, otherwise return original."""
+    """Convert date to DD/MM/YY HH:mm format."""
     if not date_str:
-        return date_str
-    date_str = re.sub(r'\(.*?\)', '', date_str).strip()
+        return "Unknown"
+    # Remove any timezone indicators or extra text
+    ds = re.sub(r'\(.*?\)', '', date_str).strip()
+    ds = re.sub(r'GMT[+-]?\d{1,2}[:0-9]*', '', ds).strip()
+    
+    # List of possible date formats to try
     date_formats = [
-        "%m/%d/%y %H:%M",
-        "%d/%m/%y %H:%M",
-        "%Y/%m/%d %H:%M",
-        "%Y-%m-%d %H:%M:%S",
-        "%d %b %Y %H:%M",
-        "%b %d, %Y %H:%M",
-        "%m/%d/%Y %H:%M",
-        "%d/%m/%Y %H:%M",
-        "%Y-%m-%d %H:%M",
-        "%d %b %Y",
-        "%b %d, %Y",
+        "%m/%d/%y %H:%M",    # 08/02/23 06:07
+        "%d/%m/%y %H:%M",    # 02/08/23 06:07
+        "%Y/%m/%d %H:%M",    # 2023/08/02 06:07
+        "%Y-%m-%d %H:%M:%S", # 2023-08-02 06:07:00
+        "%d %b %Y %H:%M",    # 02 Aug 2023 06:07
+        "%b %d, %Y %H:%M",   # Aug 02, 2023 06:07
+        "%m/%d/%Y %H:%M",    # 08/02/2023 06:07
+        "%d/%m/%Y %H:%M",    # 02/08/2023 06:07
+        "%Y-%m-%d %H:%M",    # 2023-08-02 06:07
     ]
+    
     for fmt in date_formats:
         try:
-            dt = datetime.strptime(date_str, fmt)
+            dt = datetime.strptime(ds, fmt)
             return dt.strftime("%d/%m/%y %H:%M")
         except ValueError:
             continue
-
-    # Try regex extraction fallback
+    
+    # try regex fallback
     date_patterns = [
         r'(\d{1,2})/(\d{1,2})/(\d{2,4})\s+(\d{1,2}):(\d{2})',
-        r'(\d{1,2})/(\d{1,2})/(\d{2,4})',
         r'(\d{4})-(\d{1,2})-(\d{1,2})\s+(\d{1,2}):(\d{2})',
+        r'(\d{1,2})\s+([A-Za-z]{3,})\s+(\d{4})\s+(\d{1,2}):(\d{2})'
     ]
     for pattern in date_patterns:
-        match = re.search(pattern, date_str)
+        match = re.search(pattern, ds)
         if match:
-            groups = match.groups()
             try:
+                groups = match.groups()
                 if len(groups) >= 5:
-                    # try to detect ordering; default assume MM/DD/YY unless impossible
-                    if len(groups[2]) == 4 and int(groups[0]) > 12:
-                        # probably DD/MM/YYYY
-                        day = int(groups[0]); month = int(groups[1]); year = int(groups[2])
+                    # try to parse in a few ways
+                    if len(groups[0]) == 4:  # starts with year
+                        year, month, day, hour, minute = groups[:5]
                     else:
-                        month = int(groups[0]); day = int(groups[1]); year = int(groups[2])
-                    hour = int(groups[3]) if len(groups) > 3 else 0
-                    minute = int(groups[4]) if len(groups) > 4 else 0
-                    dt = datetime(year if year > 31 else (2000 + year if year < 100 else year), month, day, hour, minute)
-                else:
-                    # no time
-                    month = int(groups[0]); day = int(groups[1]); year = int(groups[2])
-                    dt = datetime(year if year > 31 else (2000 + year if year < 100 else year), month, day)
-                return dt.strftime("%d/%m/%y %H:%M")
+                        a, b, c, hour, minute = groups[:5]
+                        # guess ordering - try dd/mm/yy heuristics
+                        if int(a) > 12:  # dd/mm
+                            day, month, year = a, b, c
+                        else:
+                            month, day, year = a, b, c
+                    # normalize year
+                    year = int(year)
+                    if year < 100:
+                        year = 2000 + year if year < 50 else 1900 + year
+                    dt = datetime(year, int(month), int(day), int(hour), int(minute))
+                    return dt.strftime("%d/%m/%y %H:%M")
             except Exception:
                 pass
     return date_str
 
-def normalize_status_str(raw_status):
-    """
-    Normalize the raw status string coming from applep12.
-    Removes emoji and non-letter characters and returns a canonical status.
-    Returns tuple: (canonical_status_of_api, mapped_status_for_readme)
-    """
-    if raw_status is None:
-        return ("unknown", "Unknown")
-
-    # Extract alphabetic chunks (this removes emoji and other symbols)
-    words = re.findall(r'[A-Za-z]+', raw_status)
-    if not words:
-        cleaned = raw_status.strip().lower()
-    else:
-        cleaned = " ".join(words).lower()
-
-    # Map common positive and negative words to canonical values
-    positive = {"good", "valid", "active", "signed", "ok", "okay"}
-    negative = {"revoked", "revocation", "invalid", "expired", "revokedcert", "revoke"}
-
-    # If any positive token present -> valid
-    for token in positive:
-        if token in cleaned:
-            return (cleaned, "Valid")
-    for token in negative:
-        if token in cleaned:
-            # If explicitly expired, still consider "Revoked" as not valid for README mapping
-            if "expired" in cleaned:
-                return (cleaned, "Revoked")
-            return (cleaned, "Revoked")
-
-    # Fallback: if it contains 'good' as substring or startswith '🟢' etc.
-    if "good" in cleaned:
-        return (cleaned, "Valid")
-
-    # Unknown fallback
-    return (cleaned, "Unknown")
-
-# -------------------------
-# README parsing/updating
-# -------------------------
-def parse_readme_table(readme_content):
-    """
-    Parse the markdown table from README.md.
-    Returns (certificates_list, lines) where certificates_list is list of dicts:
-    { company, type, status, valid_from, valid_to, download, line_index }
-    """
-    lines = readme_content.splitlines()
-    table_start = -1
-    header_regex = re.compile(r'^\|\s*Company\s*\|\s*Type\s*\|\s*Status\s*\|\s*Valid From\s*\|\s*Valid To\s*\|\s*Download', re.IGNORECASE)
-
-    for i, line in enumerate(lines):
-        if header_regex.search(line):
-            table_start = i
-            break
-
-    if table_start == -1:
-        return [], lines
-
-    certificates = []
-    # table rows start after header and the separator line (so +2)
-    for i in range(table_start + 2, len(lines)):
-        line = lines[i].rstrip()
-        if not line.startswith('|'):
-            break
-        # Split row into cells
-        cells = [cell.strip() for cell in line.split('|')[1:-1]]  # ignore leading and trailing empty entries
-        if len(cells) < 5:
-            # skip malformed rows
-            continue
-
-        cert_info = {
-            "company": cells[0],
-            "type": cells[1] if len(cells) > 1 else "",
-            "status": cells[2] if len(cells) > 2 else "",
-            "valid_from": cells[3] if len(cells) > 3 else "",
-            "valid_to": cells[4] if len(cells) > 4 else "",
-            "download": cells[5] if len(cells) > 5 else "",
-            "line_index": i
-        }
-        certificates.append(cert_info)
-
-    return certificates, lines
-
-def build_table_row(cert):
-    """
-    Build a markdown table row from cert dict:
-    { company, type, status_display, valid_from, valid_to, download }
-    """
-    # Ensure fields exist
-    company = cert.get("company", "").strip()
-    ctype = cert.get("type", "").strip()
-    status_display = cert.get("status_display", cert.get("status", "")).strip()
-    valid_from = cert.get("valid_from", "").strip()
-    valid_to = cert.get("valid_to", "").strip()
-    download = cert.get("download", "").strip()
-
-    return f"| {company} | {ctype} | {status_display} | {valid_from} | {valid_to} | {download} |"
-
-def update_readme_table(certificates, lines):
-    """
-    Replace rows in lines (list of file lines) with updated certificate rows.
-    """
-    updated_lines = list(lines)  # copy
-    for cert in certificates:
-        idx = cert.get('line_index')
-        if idx is None or idx < 0 or idx >= len(updated_lines):
-            continue
-
-        # Construct new row preserving download link if not provided
-        if not cert.get('download'):
-            # attempt to reuse existing download cell
-            existing_cells = [c.strip() for c in updated_lines[idx].split('|')[1:-1]]
-            download = existing_cells[5] if len(existing_cells) > 5 else ""
-            cert['download'] = download
-
-        # Determine status_display as emoji + text
-        status_map = {
-            "Valid": "✅ Signed",
-            "Revoked": "❌ Revoked",
-            "Unknown": "⚠️ Unknown"
-        }
-        cert['status_display'] = status_map.get(cert.get('status', ''), cert.get('status', '⚠️ Unknown'))
-
-        # If the dates are 'Unknown', keep existing ones in README
-        existing_cells = [c.strip() for c in updated_lines[idx].split('|')[1:-1]]
-        if cert.get('valid_from') in (None, "", "Unknown"):
-            cert['valid_from'] = existing_cells[3] if len(existing_cells) > 3 else ""
-        if cert.get('valid_to') in (None, "", "Unknown"):
-            cert['valid_to'] = existing_cells[4] if len(existing_cells) > 4 else ""
-
-        updated_lines[idx] = build_table_row(cert)
-
-    return updated_lines
-
-# Optional: update the "Recommend Certificate" section if you want
-def update_recommended_cert(lines, certificates, recommended_name="China Telecommunications Corporation V2"):
-    """
-    Update the Recommend Certificate line for a specific cert (if found).
-    """
-    for i, line in enumerate(lines):
-        if 'Recommend Certificate' in line or 'Recommend Certificate' in line.replace(" ", ""):
-            # Next non-empty line should hold the recommendation
-            j = i + 1
-            while j < len(lines) and lines[j].strip() == "":
-                j += 1
-            if j < len(lines):
-                # find the current recommended cert; if we have its status, update it
-                for cert in certificates:
-                    if recommended_name in cert.get('company', ''):
-                        status = cert.get('status', '').lower()
-                        if status == 'valid':
-                            lines[j] = f"**{recommended_name} - ✅ Signed**"
-                        elif status == 'revoked':
-                            lines[j] = f"**{recommended_name} - ❌ Revoked**"
-                        else:
-                            lines[j] = f"**{recommended_name} - ⚠️ Unknown**"
-                        break
-            break
-    return lines
-
-# -------------------------
-# Certificate status check
-# -------------------------
-def get_certificate_status(cert_name):
-    """Check the status of a single certificate directory and return a dict."""
+def get_certificate_status(cert_name, verbose=False):
+    """Check the status of a single certificate directory."""
     cert_dir = Path(cert_name)
-    if not cert_dir.is_dir():
-        print(f"❌ Skipping {cert_name}: not a directory")
-        return None
-
-    # Find .p12 and .mobileprovision
+    
+    # Find the .p12 and .mobileprovision files
     p12_files = list(cert_dir.glob("*.p12"))
     mp_files = list(cert_dir.glob("*.mobileprovision"))
-
+    
     if not p12_files or not mp_files:
         print(f"❌ Missing files for {cert_name}")
         return None
-
+    
     p12_path = p12_files[0]
     mp_path = mp_files[0]
-
+    
+    # Read password
     password_file = cert_dir / "password.txt"
     if password_file.exists():
-        password = password_file.read_text(encoding='utf-8').strip()
+        with open(password_file, 'r', encoding='utf-8') as f:
+            password = f.read().strip()
     else:
         password = "nezushub.vip"
-
+    
     try:
         with requests.Session() as session:
             token = get_token(session)
             html = submit_check(session, token, p12_path, password, mp_path)
             data = parse_html(html)
-
-            raw_status = data.get("binding_certificate_1", {}).get("status", "Unknown")
-            raw_status_clean, mapped = normalize_status_str(raw_status)
-
-            effective = data.get("mobileprovision", {}).get("effective", "Unknown")
-            expiration = data.get("mobileprovision", {}).get("expiration", "Unknown")
-
-            if effective and effective != "Unknown":
-                effective = convert_to_dd_mm_yy(effective)
-            if expiration and expiration != "Unknown":
-                expiration = convert_to_dd_mm_yy(expiration)
-
-            # Map mapped -> 'Valid'/'Revoked'/'Unknown' for internal use
-            status_for_readme = mapped  # already "Valid"/"Revoked"/"Unknown"
-
+            
+            # Prefer top-level certificate status, fallback to binding certificate status
+            raw_top = data.get("certificate", {}).get("status", "")
+            raw_binding = data.get("binding_certificate_1", {}).get("status", "")
+            # normalise
+            top_norm, top_raw = normalise_status(raw_top)
+            bind_norm, bind_raw = normalise_status(raw_binding)
+            
+            chosen_status = None
+            chosen_raw = ""
+            # Prefer real top-level statuses that are not Unknown
+            if top_norm != "Unknown":
+                chosen_status = top_norm
+                chosen_raw = top_raw
+            elif bind_norm != "Unknown":
+                chosen_status = bind_norm
+                chosen_raw = bind_raw
+            else:
+                chosen_status = "Unknown"
+                # include best raw info we have
+                chosen_raw = raw_top or raw_binding or ""
+            
+            effective = data.get("mobileprovision", {}).get("effective", data.get("certificate", {}).get("effective", "Unknown"))
+            expiration = data.get("mobileprovision", {}).get("expiration", data.get("certificate", {}).get("expiration", "Unknown"))
+            
+            # Convert dates
+            effective = convert_to_dd_mm_yy(effective) if effective and effective != "Unknown" else "Unknown"
+            expiration = convert_to_dd_mm_yy(expiration) if expiration and expiration != "Unknown" else "Unknown"
+            
+            # If Unknown, print debug so you can see raw values
+            if chosen_status == "Unknown" or verbose:
+                print(f"⚠️ Status: {chosen_status} (raw top: {raw_top!r}, raw binding: {raw_binding!r})")
+            
             return {
-                "status": status_for_readme,
-                "raw_status": raw_status,
-                "raw_status_clean": raw_status_clean,
+                "status": chosen_status,
                 "effective": effective,
                 "expiration": expiration,
                 "company": cert_name,
-                "download": "",  # placeholder - will be filled from README parsing if needed
+                "raw_status": chosen_raw
             }
+            
     except Exception as e:
         print(f"❌ Error checking {cert_name}: {str(e)}")
         return None
 
-# -------------------------
-# Main routine
-# -------------------------
+def parse_readme_table(readme_content):
+    """Parse the markdown table from README.md."""
+    lines = readme_content.split('\n')
+    table_start = -1
+    
+    # Find the table header line
+    for i, line in enumerate(lines):
+        if line.startswith('| Company | Type | Status |'):
+            table_start = i
+            break
+    
+    if table_start == -1:
+        return [], lines
+    
+    certificates = []
+    # Skip header and separator rows
+    for i in range(table_start + 2, len(lines)):
+        line = lines[i].strip()
+        if not line.startswith('|') or line.startswith('|---'):
+            break
+        
+        # Parse row
+        cells = [cell.strip() for cell in line.split('|')[1:-1]]
+        
+        if len(cells) >= 5:
+            cert_info = {
+                "company": cells[0],
+                "type": cells[1],
+                "status": cells[2],
+                "valid_from": cells[3],
+                "valid_to": cells[4],
+                "download": cells[5] if len(cells) > 5 else "",
+                "line_index": i
+            }
+            certificates.append(cert_info)
+    
+    return certificates, lines
+
+def update_readme_table(certificates, lines):
+    """Update the README.md lines with new certificate statuses."""
+    updated_lines = lines.copy()
+    
+    for cert in certificates:
+        idx = cert['line_index']
+        row_parts = updated_lines[idx].split('|')
+        
+        # Determine new status string
+        s = cert.get('status', '').lower()
+        if s == 'valid':
+            new_status = '✅ Signed'
+        elif s == 'revoked':
+            new_status = '❌ Revoked'
+        elif s == 'expired':
+            new_status = '⚠️ Expired'
+        else:
+            # preserve existing status cell if Unknown
+            new_status = row_parts[3].strip()
+        
+        # Update dates, use existing values if new ones are Unknown
+        valid_from = cert.get('valid_from', 'Unknown')
+        if valid_from == 'Unknown':
+            valid_from = row_parts[4].strip()
+        
+        valid_to = cert.get('valid_to', 'Unknown')
+        if valid_to == 'Unknown':
+            valid_to = row_parts[5].strip()
+        
+        # Reconstruct row with proper spacing
+        # row_parts structure: ['', ' Company ', ' Type ', ' Status ', ' Valid From ', ' Valid To ', ' Download ', ''] maybe
+        # we will replace the 3,4,5 positions (indexing as found)
+        if len(row_parts) > 3:
+            row_parts[3] = f" {new_status} "
+        if len(row_parts) > 4:
+            row_parts[4] = f" {valid_from} "
+        if len(row_parts) > 5:
+            row_parts[5] = f" {valid_to} "
+        if len(row_parts) > 6 and cert.get('download'):
+            row_parts[6] = f" {cert.get('download')} "
+        
+        updated_lines[idx] = '|'.join(row_parts)
+    
+    return updated_lines
+
+def update_recommended_cert(lines, certificates):
+    """Update the recommended certificate section (example handles China Telecom V2)."""
+    for i, line in enumerate(lines):
+        if 'Recommend Certificate' in line and i + 1 < len(lines):
+            next_line = lines[i + 1].strip()
+            if 'China Telecommunications Corporation V2' in next_line:
+                for cert in certificates:
+                    if 'China Telecommunications Corporation V2' in cert.get('company', ''):
+                        status = cert.get('status', '').lower()
+                        if status == 'valid':
+                            lines[i + 1] = f"**China Telecommunications Corporation V2 - ✅ Signed**"
+                        elif status == 'revoked':
+                            lines[i + 1] = f"**China Telecommunications Corporation V2 - ❌ Revoked**"
+                        else:
+                            lines[i + 1] = f"**China Telecommunications Corporation V2 - ⚠️ {cert.get('status', 'Unknown')}**"
+                        break
+    
+    return lines
+
 def main():
-    readme_path = Path("README.md")
+    # Read README.md
+    readme_path = Path('README.md')
     if not readme_path.exists():
-        print("❌ README.md not found in current directory.")
+        print("README.md not found in current directory.")
         return
-
-    readme_content = readme_path.read_text(encoding='utf-8')
+    
+    with open(readme_path, 'r', encoding='utf-8') as f:
+        readme_content = f.read()
+    
+    # Parse table
     certificates, lines = parse_readme_table(readme_content)
+    
     if not certificates:
-        print("🔎 No certificate rows found in README.md table.")
+        print("No certificates found in README.md")
         return
-
+    
     print(f"Found {len(certificates)} certificates in README.md")
-
+    
+    # Check each certificate
     updated_certs = []
     for cert_info in certificates:
         company = cert_info['company']
-        # The repository layout usually has directories matching the company names
-        # But some README rows may contain extra characters; try to find matching directory
-        possible_dirs = list(Path(".").glob(f"{company}*"))
-        target_dir = None
-        if len(possible_dirs) == 1:
-            target_dir = possible_dirs[0]
-        else:
-            # try exact match
-            exact = Path(company)
-            if exact.exists() and exact.is_dir():
-                target_dir = exact
-            else:
-                # fallback: try replacing encoded spaces
-                alt = Path(company.replace("%20", " ").strip())
-                if alt.exists() and alt.is_dir():
-                    target_dir = alt
-
-        if target_dir is None:
-            print(f"⚠️  Could not find directory for '{company}', skipping check (will keep existing README row).")
-            # preserve existing row info
-            cert_info['status'] = cert_info.get('status', '')
-            updated_certs.append(cert_info)
-            continue
-
         print(f"Checking {company}...")
-        result = get_certificate_status(str(target_dir))
+        
+        result = get_certificate_status(company, verbose=False)
         if result:
+            # Update cert info with new status
             cert_info['status'] = result['status']
-            cert_info['valid_from'] = result['effective'] or cert_info.get('valid_from', '')
-            cert_info['valid_to'] = result['expiration'] or cert_info.get('valid_to', '')
-            cert_info['download'] = cert_info.get('download', '')
+            cert_info['valid_from'] = result['effective']
+            cert_info['valid_to'] = result['expiration']
+            cert_info['raw_status'] = result.get('raw_status', '')
             updated_certs.append(cert_info)
-
-            status_emoji = '✅' if result['status'] == 'Valid' else ('❌' if result['status'] == 'Revoked' else '⚠️')
+            
+            status_emoji = '✅' if result['status'] == 'Valid' else ('❌' if result['status'] == 'Revoked' else ('⚠️' if result['status'] == 'Expired' else '⚠️'))
             print(f"  {status_emoji} Status: {result['status']} (raw: {result.get('raw_status')})")
-            print(f"  📅 Valid From: {cert_info['valid_from']}")
-            print(f"  📅 Valid To:   {cert_info['valid_to']}")
+            print(f"  📅 Valid From: {result['effective']}")
+            print(f"  📅 Valid To: {result['expiration']}")
         else:
-            print(f"  ⚠️  Could not check status for {company}")
+            print(f"  ⚠️  Could not check status")
             updated_certs.append(cert_info)
-
-    # Now update lines and write back README.md
+    
+    # Update the README content
     updated_lines = update_readme_table(updated_certs, lines)
     updated_lines = update_recommended_cert(updated_lines, updated_certs)
-
-    readme_path.write_text("\n".join(updated_lines), encoding='utf-8')
+    
+    # Write back to README.md
+    with open('README.md', 'w', encoding='utf-8') as f:
+        f.write('\n'.join(updated_lines))
+    
     print("\n✅ README.md updated successfully!")
 
 if __name__ == "__main__":
