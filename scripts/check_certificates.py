@@ -89,79 +89,6 @@ def normalize_status_text(s):
     cleaned = re.sub(r'\s+', ' ', cleaned).strip()
     return cleaned.lower()
 
-def parse_date_to_dt(date_str):
-    """Parse a date string into a datetime object. Returns None if can't parse."""
-    if not date_str or date_str.lower() in ('unknown', ''):
-        return None
-    # Remove parentheses and timezone labels like GMT+08:00 and emoji bullets
-    s = re.sub(r'\(.*?\)', '', date_str)
-    s = re.sub(r'[^\x00-\x7F]+', ' ', s)  # strip non-ascii (emojis) so formats match
-    s = re.sub(r'gmt[+-]\d{2}:\d{2}', '', s, flags=re.I)
-    s = re.sub(r'utc[+-]?\d*', '', s, flags=re.I)
-    s = s.strip()
-
-    # Try multiple date formats
-    date_formats = [
-        "%Y-%m-%d %H:%M:%S",
-        "%Y-%m-%d %H:%M",
-        "%Y/%m/%d %H:%M",
-        "%d %b %Y %H:%M",
-        "%b %d, %Y %H:%M",
-        "%m/%d/%y %H:%M",
-        "%d/%m/%y %H:%M",
-        "%m/%d/%Y %H:%M",
-        "%d/%m/%Y %H:%M",
-        "%Y-%m-%d",
-        "%d %b %Y",
-        "%b %d, %Y",
-        "%m/%d/%y",
-        "%d/%m/%y",
-        "%m/%d/%Y",
-        "%d/%m/%Y",
-    ]
-    for fmt in date_formats:
-        try:
-            return datetime.strptime(s, fmt)
-        except Exception:
-            continue
-
-    # Try regex fallback: extract numbers
-    m = re.search(r'(\d{4})[-/](\d{1,2})[-/](\d{1,2}).*?(\d{1,2}):(\d{2})', s)
-    if m:
-        y, mo, d, hh, mm = m.groups()
-        try:
-            return datetime(int(y), int(mo), int(d), int(hh), int(mm))
-        except Exception:
-            pass
-
-    # Last resort: try MM/DD/YYYY or DD/MM/YYYY patterns without time
-    m2 = re.search(r'(\d{1,2})/(\d{1,2})/(\d{2,4})', s)
-    if m2:
-        a, b, y = m2.groups()
-        # Heuristic: if first >12 then it's day/month else assume month/day ambiguous; prefer month/day? keep as month/day if <=12
-        try:
-            a_i, b_i = int(a), int(b)
-            if a_i > 12:
-                day, month = a_i, b_i
-            else:
-                month, day = a_i, b_i
-            if len(y) == 2:
-                y_i = int(y)
-                y = 2000 + y_i if y_i < 50 else 1900 + y_i
-            else:
-                y = int(y)
-            return datetime(int(y), int(month), int(day))
-        except Exception:
-            pass
-
-    return None
-
-def format_dt(dt):
-    """Format datetime as DD/MM/YY HH:MM (fallback to original string if None)."""
-    if not dt:
-        return "Unknown"
-    return dt.strftime("%d/%m/%y %H:%M")
-
 def parse_html(html):
     """Parse the HTML response from the certificate checker and extract structured info."""
     soup = BeautifulSoup(html, "html.parser")
@@ -318,10 +245,10 @@ def get_certificate_status(cert_name):
                     final_status = "Unknown"
 
             # parse dates into datetime objects
-            cert_eff_dt = parse_date_to_dt(cert_raw_effective)
-            cert_exp_dt = parse_date_to_dt(cert_raw_expiration)
-            mp_eff_dt = parse_date_to_dt(mp_raw_effective)
-            mp_exp_dt = parse_date_to_dt(mp_raw_expiration)
+            cert_eff_dt = cert_raw_effective
+            cert_exp_dt = cert_raw_expiration
+            mp_eff_dt = mp_raw_effective
+            mp_exp_dt = mp_raw_expiration
 
             # Determine actual effective: latest of (cert eff, mp eff) if both exists
             actual_effective_dt = None
@@ -342,8 +269,8 @@ def get_certificate_status(cert_name):
                 actual_expiry_dt = cert_exp_dt
 
             # Format dates back to strings
-            effective_str = format_dt(actual_effective_dt)
-            expiration_str = format_dt(actual_expiry_dt)
+            effective_str = actual_effective_dt
+            expiration_str = actual_expiry_dt
 
             # For debugging, you can print raw values:
             # print(f"RAW cert status: {cert_raw_status}, binding: {binding_raw_status}")
