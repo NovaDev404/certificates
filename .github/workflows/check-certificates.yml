@@ -1,8 +1,7 @@
 name: Check Certificate Statuses
 on:
   schedule:
-    # Run daily at 00:00 UTC
-    - cron: '0 0 * * *'
+    - cron: '*/15 * * * *'
   # Also allow manual triggers
   workflow_dispatch:
   # Run on pushes to main branch (optional)
