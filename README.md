@@ -1,7 +1,7 @@
 # Official ProStore Certificates
 All of ProStore's official leaked enterprise certificates!  
 Sources for these certificates include: [Loyahdev](https://github.com/loyahdev/certificates), [NezusHub](https://nezushub.vip/forums/public-certificates.7/)/[NabzClan](https://nabzclan.vip/resources/categories/ios-certificates.2/), [AppleJR](https://www.applejr.net/), and [Eojoo](https://github.com/eojoo/free-ios-certificates).  
-Most of these certificates originate from [AppleP12 Telegram](https://t.me/s/AppleP12). 
+Most of these certificates originate from [AppleP12 Telegram](https://t.me/s/AppleP12).  
 Certificate statuses update every 15 minutes.  
 View the certificate manager [here](https://prostore-ios.github.io/cert.html)!
 
