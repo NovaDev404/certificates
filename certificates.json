@@ -1,0 +1,744 @@
+{
+  "certificates": [
+    {
+      "Certificate": {
+        "CertName": "iPhone Distribution: China National Heavy Duty Truck Group Co., Ltd.",
+        "EffectiveDate": "2023-10-30T14:41:30+08:00",
+        "ExpirationDate": "2026-10-29T14:41:29+08:00",
+        "Issuer": "Apple Worldwide Developer Relations Certification Authority",
+        "Country": "US",
+        "Organization": "China National Heavy Duty Truck Group Co., Ltd.",
+        "CertificateNumber": {
+          "Hex": "0372345DF225DC204E0CE875F5A91712",
+          "Decimal": "4580667957687363830446754438549411602"
+        },
+        "CertificateStatus": "🔴Revoked",
+        "RevocationTime": "2025-09-25T00:52:01+08:00"
+      },
+      "ProvisioningProfile": {
+        "MPName": "iOS Team Inhouse Provisioning Profile: com.sinotruk.cnhtc.srm",
+        "AppID": "XC com sinotruk cnhtc srm",
+        "Identifier": "Y75T79946S.com.sinotruk.cnhtc.srm",
+        "Platform": "iOS",
+        "EffectiveDate": "2025-04-11T16:48:04+08:00",
+        "ExpirationDate": "2026-04-11T16:48:04+08:00",
+        "BindingCertificates": [
+          {
+            "CertificateStatus": "🟢Match With P12",
+            "CertificateNumber": {
+              "Hex": "0372345DF225DC204E0CE875F5A91712",
+              "Decimal": "4580667957687363830446754438549411602"
+            }
+          },
+          {
+            "CertificateStatus": "🔴Mismatch With P12",
+            "CertificateNumber": {
+              "Hex": "319960108D4997386D0EB893ACA0D76C",
+              "Decimal": "65928541635515609275898337733248079724"
+            }
+          },
+          {
+            "CertificateStatus": "🔴Mismatch With P12",
+            "CertificateNumber": {
+              "Hex": "5DA55642F052F67BC900B19FE6E2E6B7",
+              "Decimal": "124476682180316760983783623925130520247"
+            }
+          }
+        ],
+        "CertificateMatchingStatus": "🟢Match",
+        "PermissionStatus": {
+          "Apple Push Notification Service": "🟢Permission Available",
+          "HealthKit": "🔴No Permission",
+          "VPN": "🔴No Permission",
+          "Communication Notifications": "🔴No Permission",
+          "Time-sensitive Notifications": "🔴No Permission"
+        },
+        "DevicesLimit": "🟢Provisions All Devices"
+      },
+      "source": "China National Heavy Duty Truck Group Co., Ltd.",
+      "raw": [
+        "CertName: iPhone Distribution: China National Heavy Duty Truck Group Co., Ltd.",
+        "Effective Date: 2023-10-30 14:41:30 GMT+08:00",
+        "Expiration Date: 2026-10-29 14:41:29 GMT+08:00",
+        "Issuer: Apple Worldwide Developer Relations Certification Authority",
+        "Country: US",
+        "Organization: China National Heavy Duty Truck Group Co., Ltd.",
+        "Certificate Number (Hex): 0372345DF225DC204E0CE875F5A91712",
+        "Certificate Number (Decimal): 4580667957687363830446754438549411602",
+        "Certificate Status: 🔴Revoked",
+        "Revocation Time: 2025-09-25 00:52:01 GMT+08:00",
+        "-----------------------------------",
+        "MP Name: iOS Team Inhouse Provisioning Profile: com.sinotruk.cnhtc.srm",
+        "App ID：XC com sinotruk cnhtc srm",
+        "Identifier：Y75T79946S.com.sinotruk.cnhtc.srm",
+        "Platform: iOS",
+        "Effective Date: 2025-04-11 16:48:04 GMT+08:00",
+        "Expiration Date: 2026-04-11 16:48:04 GMT+08:00",
+        "Binding Certificates:",
+        "Certificate 1：",
+        "Certificate Status: 🟢Match With P12",
+        "Certificate Number (Hex): 0372345DF225DC204E0CE875F5A91712",
+        "Certificate Number (Decimal): 4580667957687363830446754438549411602",
+        "Certificate 2：",
+        "Certificate Status: 🔴Mismatch With P12",
+        "Certificate Number (Hex): 319960108D4997386D0EB893ACA0D76C",
+        "Certificate Number (Decimal): 65928541635515609275898337733248079724",
+        "Certificate 3：",
+        "Certificate Status: 🔴Mismatch With P12",
+        "Certificate Number (Hex): 5DA55642F052F67BC900B19FE6E2E6B7",
+        "Certificate Number (Decimal): 124476682180316760983783623925130520247",
+        "Certificate Matching Status: 🟢Match",
+        "Permission Status:",
+        "Apple Push Notification Service: 🟢Permission Available",
+        "HealthKit: 🔴No Permission",
+        "VPN: 🔴No Permission",
+        "Communication Notifications: 🔴No Permission",
+        "Time-sensitive Notifications: 🔴No Permission",
+        "Devices Limit: 🟢Provisions All Devices"
+      ]
+    },
+    {
+      "Certificate": {
+        "CertName": "iPhone Distribution: China Telecommunications Corporation",
+        "EffectiveDate": "2023-06-07T09:46:02+08:00",
+        "ExpirationDate": "2026-06-06T09:46:01+08:00",
+        "Issuer": "Apple Worldwide Developer Relations Certification Authority",
+        "Country": "US",
+        "Organization": "China Telecommunications Corporation",
+        "CertificateNumber": {
+          "Hex": "458AFC32B00D3FF2132AB49E83123295",
+          "Decimal": "92438383858750627116056933766129660565"
+        },
+        "CertificateStatus": "🔴Revoked",
+        "RevocationTime": "2025-06-19T22:41:00+08:00"
+      },
+      "ProvisioningProfile": {
+        "MPName": "FWevKm",
+        "AppID": "h9SGlK",
+        "Identifier": "8Z3JTDNJXC.com.t.h9SGlK",
+        "Platform": "iOS",
+        "EffectiveDate": "2025-04-18T16:18:10+08:00",
+        "ExpirationDate": "2026-04-18T16:18:10+08:00",
+        "BindingCertificates": [
+          {
+            "CertificateStatus": "🟢Match With P12",
+            "CertificateNumber": {
+              "Hex": "458AFC32B00D3FF2132AB49E83123295",
+              "Decimal": "92438383858750627116056933766129660565"
+            }
+          }
+        ],
+        "CertificateMatchingStatus": "🟢Match",
+        "PermissionStatus": {
+          "Apple Push Notification Service": "🟢Permission Available",
+          "HealthKit": "🔴No Permission",
+          "VPN": "🔴No Permission",
+          "Communication Notifications": "🔴No Permission",
+          "Time-sensitive Notifications": "🔴No Permission"
+        },
+        "DevicesLimit": "🟢Provisions All Devices"
+      },
+      "source": "China Telecommunications Corporation",
+      "raw": [
+        "CertName: iPhone Distribution: China Telecommunications Corporation",
+        "Effective Date: 2023-06-07 09:46:02 GMT+08:00",
+        "Expiration Date: 2026-06-06 09:46:01 GMT+08:00",
+        "Issuer: Apple Worldwide Developer Relations Certification Authority",
+        "Country: US",
+        "Organization: China Telecommunications Corporation",
+        "Certificate Number (Hex): 458AFC32B00D3FF2132AB49E83123295",
+        "Certificate Number (Decimal): 92438383858750627116056933766129660565",
+        "Certificate Status: 🔴Revoked",
+        "Revocation Time: 2025-06-19 22:41:00 GMT+08:00",
+        "-----------------------------------",
+        "MP Name: FWevKm",
+        "App ID：h9SGlK",
+        "Identifier：8Z3JTDNJXC.com.t.h9SGlK",
+        "Platform: iOS",
+        "Effective Date: 2025-04-18 16:18:10 GMT+08:00",
+        "Expiration Date: 2026-04-18 16:18:10 GMT+08:00",
+        "Binding Certificates:",
+        "Certificate 1：",
+        "Certificate Status: 🟢Match With P12",
+        "Certificate Number (Hex): 458AFC32B00D3FF2132AB49E83123295",
+        "Certificate Number (Decimal): 92438383858750627116056933766129660565",
+        "Certificate Matching Status: 🟢Match",
+        "Permission Status:",
+        "Apple Push Notification Service: 🟢Permission Available",
+        "HealthKit: 🔴No Permission",
+        "VPN: 🔴No Permission",
+        "Communication Notifications: 🔴No Permission",
+        "Time-sensitive Notifications: 🔴No Permission",
+        "Devices Limit: 🟢Provisions All Devices"
+      ]
+    },
+    {
+      "Certificate": {
+        "CertName": "iPhone Distribution: Commission on Elections",
+        "EffectiveDate": "2025-04-28T19:10:01+08:00",
+        "ExpirationDate": "2028-04-27T19:10:00+08:00",
+        "Issuer": "Apple Worldwide Developer Relations Certification Authority",
+        "Country": "PH",
+        "Organization": "Commission on Elections",
+        "CertificateNumber": {
+          "Hex": "4E5B14A39E300B1A71C38788E87CE11D",
+          "Decimal": "104152701296689382684146957870792761629"
+        },
+        "CertificateStatus": "🟢Good",
+        "RevocationTime": null
+      },
+      "ProvisioningProfile": {
+        "MPName": "Committee Supervision",
+        "AppID": "Committee Supervision",
+        "Identifier": "9NS9KBTAFV.com.CommitteeSupervision.gov",
+        "Platform": "iOS",
+        "EffectiveDate": "2025-08-25T09:40:45+08:00",
+        "ExpirationDate": "2026-08-25T09:40:45+08:00",
+        "BindingCertificates": [
+          {
+            "CertificateStatus": "🟢Match With P12",
+            "CertificateNumber": {
+              "Hex": "4E5B14A39E300B1A71C38788E87CE11D",
+              "Decimal": "104152701296689382684146957870792761629"
+            }
+          }
+        ],
+        "CertificateMatchingStatus": "🟢Match",
+        "PermissionStatus": {
+          "Apple Push Notification Service": "🟢Permission Available",
+          "HealthKit": "🔴No Permission",
+          "VPN": "🔴No Permission",
+          "Communication Notifications": "🔴No Permission",
+          "Time-sensitive Notifications": "🔴No Permission"
+        },
+        "DevicesLimit": "🟢Provisions All Devices"
+      },
+      "source": "Commission on Elections",
+      "raw": [
+        "CertName: iPhone Distribution: Commission on Elections",
+        "Effective Date: 2025-04-28 19:10:01 GMT+08:00",
+        "Expiration Date: 2028-04-27 19:10:00 GMT+08:00",
+        "Issuer: Apple Worldwide Developer Relations Certification Authority",
+        "Country: PH",
+        "Organization: Commission on Elections",
+        "Certificate Number (Hex): 4E5B14A39E300B1A71C38788E87CE11D",
+        "Certificate Number (Decimal): 104152701296689382684146957870792761629",
+        "Certificate Status: 🟢Good",
+        "-----------------------------------",
+        "MP Name: Committee Supervision",
+        "App ID：Committee Supervision",
+        "Identifier：9NS9KBTAFV.com.CommitteeSupervision.gov",
+        "Platform: iOS",
+        "Effective Date: 2025-08-25 09:40:45 GMT+08:00",
+        "Expiration Date: 2026-08-25 09:40:45 GMT+08:00",
+        "Binding Certificates:",
+        "Certificate 1：",
+        "Certificate Status: 🟢Match With P12",
+        "Certificate Number (Hex): 4E5B14A39E300B1A71C38788E87CE11D",
+        "Certificate Number (Decimal): 104152701296689382684146957870792761629",
+        "Certificate Matching Status: 🟢Match",
+        "Permission Status:",
+        "Apple Push Notification Service: 🟢Permission Available",
+        "HealthKit: 🔴No Permission",
+        "VPN: 🔴No Permission",
+        "Communication Notifications: 🔴No Permission",
+        "Time-sensitive Notifications: 🔴No Permission",
+        "Devices Limit: 🟢Provisions All Devices"
+      ]
+    },
+    {
+      "Certificate": {
+        "CertName": "iPhone Distribution: Etisalat - Emirates Telecommunications Corporation",
+        "EffectiveDate": "2023-02-08T19:07:10+08:00",
+        "ExpirationDate": "2026-02-07T19:07:09+08:00",
+        "Issuer": "Apple Worldwide Developer Relations Certification Authority",
+        "Country": "US",
+        "Organization": "Etisalat - Emirates Telecommunications Corporation",
+        "CertificateNumber": {
+          "Hex": "235E56A11F32386F18DB1BAE32164534",
+          "Decimal": "47012812809789156286275042971829552436"
+        },
+        "CertificateStatus": "🔴Revoked",
+        "RevocationTime": "2025-12-09T15:15:00+08:00"
+      },
+      "ProvisioningProfile": {
+        "MPName": "iOS Team Inhouse Provisioning Profile: com.etisalat.INDY",
+        "AppID": "XC com etisalat INDY",
+        "Identifier": "GDL9BC8Q4T.com.etisalat.INDY",
+        "Platform": "iOS",
+        "EffectiveDate": "2025-04-09T20:50:26+08:00",
+        "ExpirationDate": "2026-04-09T20:50:26+08:00",
+        "BindingCertificates": [
+          {
+            "CertificateStatus": "🟢Match With P12",
+            "CertificateNumber": {
+              "Hex": "235E56A11F32386F18DB1BAE32164534",
+              "Decimal": "47012812809789156286275042971829552436"
+            }
+          },
+          {
+            "CertificateStatus": "🔴Mismatch With P12",
+            "CertificateNumber": {
+              "Hex": "60E965B72F8BC4C813482E6973795EA4",
+              "Decimal": "128817755800229012990398202115752812196"
+            }
+          },
+          {
+            "CertificateStatus": "🔴Mismatch With P12",
+            "CertificateNumber": {
+              "Hex": "0DC9C3CC8F9D43317A794E7744FA143C",
+              "Decimal": "18327586890633746756143485047828780092"
+            }
+          }
+        ],
+        "CertificateMatchingStatus": "🟢Match",
+        "PermissionStatus": {
+          "Apple Push Notification Service": "🟢Permission Available",
+          "HealthKit": "🔴No Permission",
+          "VPN": "🔴No Permission",
+          "Communication Notifications": "🔴No Permission",
+          "Time-sensitive Notifications": "🔴No Permission"
+        },
+        "DevicesLimit": "🟢Provisions All Devices"
+      },
+      "source": "Etisalat - Emirates Telecommunications Corporation",
+      "raw": [
+        "CertName: iPhone Distribution: Etisalat - Emirates Telecommunications Corporation",
+        "Effective Date: 2023-02-08 19:07:10 GMT+08:00",
+        "Expiration Date: 2026-02-07 19:07:09 GMT+08:00",
+        "Issuer: Apple Worldwide Developer Relations Certification Authority",
+        "Country: US",
+        "Organization: Etisalat - Emirates Telecommunications Corporation",
+        "Certificate Number (Hex): 235E56A11F32386F18DB1BAE32164534",
+        "Certificate Number (Decimal): 47012812809789156286275042971829552436",
+        "Certificate Status: 🔴Revoked",
+        "Revocation Time: 2025-12-09 15:15:00 GMT+08:00",
+        "-----------------------------------",
+        "MP Name: iOS Team Inhouse Provisioning Profile: com.etisalat.INDY",
+        "App ID：XC com etisalat INDY",
+        "Identifier：GDL9BC8Q4T.com.etisalat.INDY",
+        "Platform: iOS",
+        "Effective Date: 2025-04-09 20:50:26 GMT+08:00",
+        "Expiration Date: 2026-04-09 20:50:26 GMT+08:00",
+        "Binding Certificates:",
+        "Certificate 1：",
+        "Certificate Status: 🟢Match With P12",
+        "Certificate Number (Hex): 235E56A11F32386F18DB1BAE32164534",
+        "Certificate Number (Decimal): 47012812809789156286275042971829552436",
+        "Certificate 2：",
+        "Certificate Status: 🔴Mismatch With P12",
+        "Certificate Number (Hex): 60E965B72F8BC4C813482E6973795EA4",
+        "Certificate Number (Decimal): 128817755800229012990398202115752812196",
+        "Certificate 3：",
+        "Certificate Status: 🔴Mismatch With P12",
+        "Certificate Number (Hex): 0DC9C3CC8F9D43317A794E7744FA143C",
+        "Certificate Number (Decimal): 18327586890633746756143485047828780092",
+        "Certificate Matching Status: 🟢Match",
+        "Permission Status:",
+        "Apple Push Notification Service: 🟢Permission Available",
+        "HealthKit: 🔴No Permission",
+        "VPN: 🔴No Permission",
+        "Communication Notifications: 🔴No Permission",
+        "Time-sensitive Notifications: 🔴No Permission",
+        "Devices Limit: 🟢Provisions All Devices"
+      ]
+    },
+    {
+      "Certificate": {
+        "CertName": "iPhone Distribution: GLOBAL TAKEOFF, INC",
+        "EffectiveDate": "2025-06-05T16:55:30+08:00",
+        "ExpirationDate": "2028-06-04T16:55:29+08:00",
+        "Issuer": "Apple Worldwide Developer Relations Certification Authority",
+        "Country": "US",
+        "Organization": "GLOBAL TAKEOFF, INC",
+        "CertificateNumber": {
+          "Hex": "486DA8D34F1BC4683027E023C0295F2E",
+          "Decimal": "96273800240532827329768257831354064686"
+        },
+        "CertificateStatus": "🔴Revoked",
+        "RevocationTime": "2025-08-20T01:58:00+08:00"
+      },
+      "ProvisioningProfile": {
+        "MPName": "suppose",
+        "AppID": "XC com gto supposetv ent",
+        "Identifier": "VTM793CVGA.com.gto.supposetv.ent",
+        "Platform": "iOS",
+        "EffectiveDate": "2025-06-27T04:10:06+08:00",
+        "ExpirationDate": "2026-06-27T04:10:06+08:00",
+        "BindingCertificates": [
+          {
+            "CertificateStatus": "🟢Match With P12",
+            "CertificateNumber": {
+              "Hex": "486DA8D34F1BC4683027E023C0295F2E",
+              "Decimal": "96273800240532827329768257831354064686"
+            }
+          }
+        ],
+        "CertificateMatchingStatus": "🟢Match",
+        "PermissionStatus": {
+          "Apple Push Notification Service": "🔴No Permission",
+          "HealthKit": "🔴No Permission",
+          "VPN": "🔴No Permission",
+          "Communication Notifications": "🔴No Permission",
+          "Time-sensitive Notifications": "🔴No Permission"
+        },
+        "DevicesLimit": "🟢Provisions All Devices"
+      },
+      "source": "Global Takeoff, Inc",
+      "raw": [
+        "CertName: iPhone Distribution: GLOBAL TAKEOFF, INC",
+        "Effective Date: 2025-06-05 16:55:30 GMT+08:00",
+        "Expiration Date: 2028-06-04 16:55:29 GMT+08:00",
+        "Issuer: Apple Worldwide Developer Relations Certification Authority",
+        "Country: US",
+        "Organization: GLOBAL TAKEOFF, INC",
+        "Certificate Number (Hex): 486DA8D34F1BC4683027E023C0295F2E",
+        "Certificate Number (Decimal): 96273800240532827329768257831354064686",
+        "Certificate Status: 🔴Revoked",
+        "Revocation Time: 2025-08-20 01:58:00 GMT+08:00",
+        "-----------------------------------",
+        "MP Name: suppose",
+        "App ID：XC com gto supposetv ent",
+        "Identifier：VTM793CVGA.com.gto.supposetv.ent",
+        "Platform: iOS",
+        "Effective Date: 2025-06-27 04:10:06 GMT+08:00",
+        "Expiration Date: 2026-06-27 04:10:06 GMT+08:00",
+        "Binding Certificates:",
+        "Certificate 1：",
+        "Certificate Status: 🟢Match With P12",
+        "Certificate Number (Hex): 486DA8D34F1BC4683027E023C0295F2E",
+        "Certificate Number (Decimal): 96273800240532827329768257831354064686",
+        "Certificate Matching Status: 🟢Match",
+        "Permission Status:",
+        "Apple Push Notification Service: 🔴No Permission",
+        "HealthKit: 🔴No Permission",
+        "VPN: 🔴No Permission",
+        "Communication Notifications: 🔴No Permission",
+        "Time-sensitive Notifications: 🔴No Permission",
+        "Devices Limit: 🟢Provisions All Devices"
+      ]
+    },
+    {
+      "Certificate": {
+        "CertName": "iPhone Distribution: Guangzhou Huahan Educational & Technology Co.,Ltd.",
+        "EffectiveDate": "2025-01-23T17:05:36+08:00",
+        "ExpirationDate": "2028-01-23T17:05:35+08:00",
+        "Issuer": "Apple Worldwide Developer Relations Certification Authority",
+        "Country": "US",
+        "Organization": "Guangzhou Huahan Educational & Technology Co.,Ltd.",
+        "CertificateNumber": {
+          "Hex": "7F9C19E5252CDD40B923270A4DFCC281",
+          "Decimal": "169622478989610238963505857267729482369"
+        },
+        "CertificateStatus": "🔴Revoked",
+        "RevocationTime": "2025-02-24T14:37:00+08:00"
+      },
+      "ProvisioningProfile": {
+        "MPName": "iOS Team Inhouse Provisioning Profile: com.huahaniosenterprisemobileprovision.hh.001",
+        "AppID": "XC com huahaniosenterprisemobileprovision hh 001",
+        "Identifier": "S6XYYYY3EN.com.huahaniosenterprisemobileprovision.hh.001",
+        "Platform": "iOS",
+        "EffectiveDate": "2025-01-24T11:35:31+08:00",
+        "ExpirationDate": "2026-01-24T11:35:31+08:00",
+        "BindingCertificates": [
+          {
+            "CertificateStatus": "🟢Match With P12",
+            "CertificateNumber": {
+              "Hex": "7F9C19E5252CDD40B923270A4DFCC281",
+              "Decimal": "169622478989610238963505857267729482369"
+            }
+          },
+          {
+            "CertificateStatus": "🔴Mismatch With P12",
+            "CertificateNumber": {
+              "Hex": "16059FBED9BC477EEA28BC0BAA20BF0C",
+              "Decimal": "29272217415424544482350368186683145996"
+            }
+          },
+          {
+            "CertificateStatus": "🔴Mismatch With P12",
+            "CertificateNumber": {
+              "Hex": "552F316A79E4E26D8A56567A61D4FFD0",
+              "Decimal": "113229419868049182089978463032823840720"
+            }
+          }
+        ],
+        "CertificateMatchingStatus": "🟢Match",
+        "PermissionStatus": {
+          "Apple Push Notification Service": "🔴No Permission",
+          "HealthKit": "🔴No Permission",
+          "VPN": "🔴No Permission",
+          "Communication Notifications": "🔴No Permission",
+          "Time-sensitive Notifications": "🔴No Permission"
+        },
+        "DevicesLimit": "🟢Provisions All Devices"
+      },
+      "source": "Guangzhou Huahan Educational & Technology Co., Ltd.",
+      "raw": [
+        "CertName: iPhone Distribution: Guangzhou Huahan Educational & Technology Co.,Ltd.",
+        "Effective Date: 2025-01-23 17:05:36 GMT+08:00",
+        "Expiration Date: 2028-01-23 17:05:35 GMT+08:00",
+        "Issuer: Apple Worldwide Developer Relations Certification Authority",
+        "Country: US",
+        "Organization: Guangzhou Huahan Educational & Technology Co.,Ltd.",
+        "Certificate Number (Hex): 7F9C19E5252CDD40B923270A4DFCC281",
+        "Certificate Number (Decimal): 169622478989610238963505857267729482369",
+        "Certificate Status: 🔴Revoked",
+        "Revocation Time: 2025-02-24 14:37:00 GMT+08:00",
+        "-----------------------------------",
+        "MP Name: iOS Team Inhouse Provisioning Profile: com.huahaniosenterprisemobileprovision.hh.001",
+        "App ID：XC com huahaniosenterprisemobileprovision hh 001",
+        "Identifier：S6XYYYY3EN.com.huahaniosenterprisemobileprovision.hh.001",
+        "Platform: iOS",
+        "Effective Date: 2025-01-24 11:35:31 GMT+08:00",
+        "Expiration Date: 2026-01-24 11:35:31 GMT+08:00",
+        "Binding Certificates:",
+        "Certificate 1：",
+        "Certificate Status: 🟢Match With P12",
+        "Certificate Number (Hex): 7F9C19E5252CDD40B923270A4DFCC281",
+        "Certificate Number (Decimal): 169622478989610238963505857267729482369",
+        "Certificate 2：",
+        "Certificate Status: 🔴Mismatch With P12",
+        "Certificate Number (Hex): 16059FBED9BC477EEA28BC0BAA20BF0C",
+        "Certificate Number (Decimal): 29272217415424544482350368186683145996",
+        "Certificate 3：",
+        "Certificate Status: 🔴Mismatch With P12",
+        "Certificate Number (Hex): 552F316A79E4E26D8A56567A61D4FFD0",
+        "Certificate Number (Decimal): 113229419868049182089978463032823840720",
+        "Certificate Matching Status: 🟢Match",
+        "Permission Status:",
+        "Apple Push Notification Service: 🔴No Permission",
+        "HealthKit: 🔴No Permission",
+        "VPN: 🔴No Permission",
+        "Communication Notifications: 🔴No Permission",
+        "Time-sensitive Notifications: 🔴No Permission",
+        "Devices Limit: 🟢Provisions All Devices"
+      ]
+    },
+    {
+      "Certificate": {
+        "CertName": "iPhone Distribution: Tianjin University of Commerce",
+        "EffectiveDate": "2024-02-26T14:15:37+08:00",
+        "ExpirationDate": "2027-02-25T14:15:36+08:00",
+        "Issuer": "Apple Worldwide Developer Relations Certification Authority",
+        "Country": "CN",
+        "Organization": "Tianjin University of Commerce",
+        "CertificateNumber": {
+          "Hex": "48B6020DCBE29804A8FB4795AFFF6069",
+          "Decimal": "96649455382651993580878627633956348009"
+        },
+        "CertificateStatus": "🔴Revoked",
+        "RevocationTime": "2025-04-01T21:35:00+08:00"
+      },
+      "ProvisioningProfile": {
+        "MPName": "Dist_wiseduEx",
+        "AppID": "com wisedu extension",
+        "Identifier": "Y4A766YXYG.com.wisedu.extension",
+        "Platform": "iOS",
+        "EffectiveDate": "2025-03-17T20:52:01+08:00",
+        "ExpirationDate": "2026-03-17T20:52:01+08:00",
+        "BindingCertificates": [
+          {
+            "CertificateStatus": "🟢Match With P12",
+            "CertificateNumber": {
+              "Hex": "48B6020DCBE29804A8FB4795AFFF6069",
+              "Decimal": "96649455382651993580878627633956348009"
+            }
+          }
+        ],
+        "CertificateMatchingStatus": "🟢Match",
+        "PermissionStatus": {
+          "Apple Push Notification Service": "🟢Permission Available",
+          "HealthKit": "🔴No Permission",
+          "VPN": "🔴No Permission",
+          "Communication Notifications": "🔴No Permission",
+          "Time-sensitive Notifications": "🔴No Permission"
+        },
+        "DevicesLimit": "🟢Provisions All Devices"
+      },
+      "source": "Tianjin University of Commerce",
+      "raw": [
+        "CertName: iPhone Distribution: Tianjin University of Commerce",
+        "Effective Date: 2024-02-26 14:15:37 GMT+08:00",
+        "Expiration Date: 2027-02-25 14:15:36 GMT+08:00",
+        "Issuer: Apple Worldwide Developer Relations Certification Authority",
+        "Country: CN",
+        "Organization: Tianjin University of Commerce",
+        "Certificate Number (Hex): 48B6020DCBE29804A8FB4795AFFF6069",
+        "Certificate Number (Decimal): 96649455382651993580878627633956348009",
+        "Certificate Status: 🔴Revoked",
+        "Revocation Time: 2025-04-01 21:35:00 GMT+08:00",
+        "-----------------------------------",
+        "MP Name: Dist_wiseduEx",
+        "App ID：com wisedu extension",
+        "Identifier：Y4A766YXYG.com.wisedu.extension",
+        "Platform: iOS",
+        "Effective Date: 2025-03-17 20:52:01 GMT+08:00",
+        "Expiration Date: 2026-03-17 20:52:01 GMT+08:00",
+        "Binding Certificates:",
+        "Certificate 1：",
+        "Certificate Status: 🟢Match With P12",
+        "Certificate Number (Hex): 48B6020DCBE29804A8FB4795AFFF6069",
+        "Certificate Number (Decimal): 96649455382651993580878627633956348009",
+        "Certificate Matching Status: 🟢Match",
+        "Permission Status:",
+        "Apple Push Notification Service: 🟢Permission Available",
+        "HealthKit: 🔴No Permission",
+        "VPN: 🔴No Permission",
+        "Communication Notifications: 🔴No Permission",
+        "Time-sensitive Notifications: 🔴No Permission",
+        "Devices Limit: 🟢Provisions All Devices"
+      ]
+    },
+    {
+      "Certificate": {
+        "CertName": "iPhone Distribution: Wasu Media & Network Co., Ltd.",
+        "EffectiveDate": "2023-01-13T13:42:12+08:00",
+        "ExpirationDate": "2026-01-12T13:42:11+08:00",
+        "Issuer": "Apple Worldwide Developer Relations Certification Authority",
+        "Country": "CN",
+        "Organization": "Wasu Media & Network Co., Ltd.",
+        "CertificateNumber": {
+          "Hex": "3565403AA98A4B6BC1C9515E42F39D76",
+          "Decimal": "70974808481230772976787815509582388598"
+        },
+        "CertificateStatus": "🔴Revoked",
+        "RevocationTime": "2025-12-14T03:48:06+08:00"
+      },
+      "ProvisioningProfile": {
+        "MPName": "jicengzhili_create20250114",
+        "AppID": "jicengzhili",
+        "Identifier": "K22F8J8YYW.com.jicengzhili.huashu",
+        "Platform": "iOS",
+        "EffectiveDate": "2025-01-14T15:08:55+08:00",
+        "ExpirationDate": "2026-01-12T13:42:11+08:00",
+        "BindingCertificates": [
+          {
+            "CertificateStatus": "🟢Match With P12",
+            "CertificateNumber": {
+              "Hex": "3565403AA98A4B6BC1C9515E42F39D76",
+              "Decimal": "70974808481230772976787815509582388598"
+            }
+          }
+        ],
+        "CertificateMatchingStatus": "🟢Match",
+        "PermissionStatus": {
+          "Apple Push Notification Service": "🟢Permission Available",
+          "HealthKit": "🔴No Permission",
+          "VPN": "🔴No Permission",
+          "Communication Notifications": "🔴No Permission",
+          "Time-sensitive Notifications": "🔴No Permission"
+        },
+        "DevicesLimit": "🟢Provisions All Devices"
+      },
+      "source": "Wasu Media & Network Co., Ltd.",
+      "raw": [
+        "CertName: iPhone Distribution: Wasu Media & Network Co., Ltd.",
+        "Effective Date: 2023-01-13 13:42:12 GMT+08:00",
+        "Expiration Date: 2026-01-12 13:42:11 GMT+08:00",
+        "Issuer: Apple Worldwide Developer Relations Certification Authority",
+        "Country: CN",
+        "Organization: Wasu Media & Network Co., Ltd.",
+        "Certificate Number (Hex): 3565403AA98A4B6BC1C9515E42F39D76",
+        "Certificate Number (Decimal): 70974808481230772976787815509582388598",
+        "Certificate Status: 🔴Revoked",
+        "Revocation Time: 2025-12-14 03:48:06 GMT+08:00",
+        "-----------------------------------",
+        "MP Name: jicengzhili_create20250114",
+        "App ID：jicengzhili",
+        "Identifier：K22F8J8YYW.com.jicengzhili.huashu",
+        "Platform: iOS",
+        "Effective Date: 2025-01-14 15:08:55 GMT+08:00",
+        "Expiration Date: 2026-01-12 13:42:11 GMT+08:00",
+        "Binding Certificates:",
+        "Certificate 1：",
+        "Certificate Status: 🟢Match With P12",
+        "Certificate Number (Hex): 3565403AA98A4B6BC1C9515E42F39D76",
+        "Certificate Number (Decimal): 70974808481230772976787815509582388598",
+        "Certificate Matching Status: 🟢Match",
+        "Permission Status:",
+        "Apple Push Notification Service: 🟢Permission Available",
+        "HealthKit: 🔴No Permission",
+        "VPN: 🔴No Permission",
+        "Communication Notifications: 🔴No Permission",
+        "Time-sensitive Notifications: 🔴No Permission",
+        "Devices Limit: 🟢Provisions All Devices"
+      ]
+    },
+    {
+      "Certificate": {
+        "CertName": "iPhone Distribution: Wuling Power Corporation",
+        "EffectiveDate": "2024-05-30T14:17:02+08:00",
+        "ExpirationDate": "2027-05-30T14:17:01+08:00",
+        "Issuer": "Apple Worldwide Developer Relations Certification Authority",
+        "Country": "US",
+        "Organization": "Wuling Power Corporation",
+        "CertificateNumber": {
+          "Hex": "66FAB422115C87F5ED78A9E8A6049D6E",
+          "Decimal": "136882983317554417127391244030841232750"
+        },
+        "CertificateStatus": "🔴Revoked",
+        "RevocationTime": "2025-06-26T01:20:00+08:00"
+      },
+      "ProvisioningProfile": {
+        "MPName": "wlUatMobile-2025",
+        "AppID": "wulingProductionMobile",
+        "Identifier": "56C26K6765.com.wuling.productionMobile",
+        "Platform": "iOS",
+        "EffectiveDate": "2025-05-14T17:44:48+08:00",
+        "ExpirationDate": "2026-05-14T17:44:48+08:00",
+        "BindingCertificates": [
+          {
+            "CertificateStatus": "🟢Match With P12",
+            "CertificateNumber": {
+              "Hex": "66FAB422115C87F5ED78A9E8A6049D6E",
+              "Decimal": "136882983317554417127391244030841232750"
+            }
+          }
+        ],
+        "CertificateMatchingStatus": "🟢Match",
+        "PermissionStatus": {
+          "Apple Push Notification Service": "🟢Permission Available",
+          "HealthKit": "🔴No Permission",
+          "VPN": "🔴No Permission",
+          "Communication Notifications": "🔴No Permission",
+          "Time-sensitive Notifications": "🔴No Permission"
+        },
+        "DevicesLimit": "🟢Provisions All Devices"
+      },
+      "source": "Wuling Power Corporation",
+      "raw": [
+        "CertName: iPhone Distribution: Wuling Power Corporation",
+        "Effective Date: 2024-05-30 14:17:02 GMT+08:00",
+        "Expiration Date: 2027-05-30 14:17:01 GMT+08:00",
+        "Issuer: Apple Worldwide Developer Relations Certification Authority",
+        "Country: US",
+        "Organization: Wuling Power Corporation",
+        "Certificate Number (Hex): 66FAB422115C87F5ED78A9E8A6049D6E",
+        "Certificate Number (Decimal): 136882983317554417127391244030841232750",
+        "Certificate Status: 🔴Revoked",
+        "Revocation Time: 2025-06-26 01:20:00 GMT+08:00",
+        "-----------------------------------",
+        "MP Name: wlUatMobile-2025",
+        "App ID：wulingProductionMobile",
+        "Identifier：56C26K6765.com.wuling.productionMobile",
+        "Platform: iOS",
+        "Effective Date: 2025-05-14 17:44:48 GMT+08:00",
+        "Expiration Date: 2026-05-14 17:44:48 GMT+08:00",
+        "Binding Certificates:",
+        "Certificate 1：",
+        "Certificate Status: 🟢Match With P12",
+        "Certificate Number (Hex): 66FAB422115C87F5ED78A9E8A6049D6E",
+        "Certificate Number (Decimal): 136882983317554417127391244030841232750",
+        "Certificate Matching Status: 🟢Match",
+        "Permission Status:",
+        "Apple Push Notification Service: 🟢Permission Available",
+        "HealthKit: 🔴No Permission",
+        "VPN: 🔴No Permission",
+        "Communication Notifications: 🔴No Permission",
+        "Time-sensitive Notifications: 🔴No Permission",
+        "Devices Limit: 🟢Provisions All Devices"
+      ]
+    }
+  ]
+}
