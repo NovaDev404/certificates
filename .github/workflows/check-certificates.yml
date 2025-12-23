@@ -2,9 +2,7 @@ name: Check Certificate Statuses
 on:
   schedule:
     - cron: '*/15 * * * *'
-  # Also allow manual triggers
   workflow_dispatch:
-  # Run on pushes to main branch (optional)
   push:
     branches: [ main ]
 
@@ -13,35 +11,40 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
-        
+        persist-credentials: true
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
-        
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install requests beautifulsoup4 lxml
-        
+
     - name: Check certificate statuses
       run: |
         python scripts/check_certificates.py
-        
-    - name: Commit changes if any
+
+    - name: Show diff (for debug)
+      run: |
+        git --no-pager diff --color
+
+    - name: Commit changes if any (README.md & certificates.json)
       run: |
         git config --global user.name 'GitHub Actions'
         git config --global user.email 'actions@github.com'
-        git add README.md
-        if git diff --quiet HEAD -- README.md; then
+        git add certificates.json README.md || true
+        if git diff --cached --quiet; then
           echo "No changes to commit"
         else
-          git commit -m "📝 Update certificate statuses [$(date +'%Y-%m-%d %H:%M')]"
+          git commit -m "📝 Update certificate statuses and certificates.json [$(date -u +'%Y-%m-%d %H:%M UTC')]"
           git push
         fi
