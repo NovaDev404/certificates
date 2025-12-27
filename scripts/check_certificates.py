@@ -2,8 +2,81 @@
 import os
 import requests
 from pathlib import Path
+from datetime import datetime
 import re
 import sys
+
+def parse_api_date(date_str):
+    """Parse dates like 'Aug 25 01:31:00 2025 GMT' robustly into a datetime.
+    Returns a datetime or None if it can't parse.
+    """
+    if not date_str:
+        return None
+
+    # Try a regex to normalize day to zero-padded form (handles single-digit days
+    # that may be represented with one space: 'Aug  5 01:31:00 2025 GMT')
+    m = re.match(r'([A-Za-z]{3})\s+(\d{1,2})\s+(\d{2}:\d{2}:\d{2})\s+(\d{4})\s+GMT', date_str)
+    if not m:
+        return None
+
+    month_abbr, day, timepart, year = m.groups()
+    day = day.zfill(2)  # ensure two digits
+    normalized = f"{month_abbr} {day} {timepart} {year} GMT"
+
+    try:
+        return datetime.strptime(normalized, "%b %d %H:%M:%S %Y GMT")
+    except ValueError:
+        return None
+
+def earliest_of_strings(a_str, b_str):
+    """Return the string (a_str or b_str) whose parsed datetime is earlier.
+    If both parse, compare datetimes. If only one parses, prefer the parsed one.
+    If neither parse, fall back to lexicographical comparison.
+    If one is empty, return the other.
+    """
+    if not a_str and not b_str:
+        return ""
+    if not a_str:
+        return b_str
+    if not b_str:
+        return a_str
+
+    a_dt = parse_api_date(a_str)
+    b_dt = parse_api_date(b_str)
+
+    if a_dt and b_dt:
+        return a_str if a_dt < b_dt else b_str
+    if a_dt and not b_dt:
+        return a_str
+    if b_dt and not a_dt:
+        return b_str
+
+    # fallback (should be rare): lexical
+    return a_str if a_str < b_str else b_str
+
+def latest_of_strings(a_str, b_str):
+    """Return the string (a_str or b_str) whose parsed datetime is later.
+    Same fallback strategy as earliest_of_strings.
+    """
+    if not a_str and not b_str:
+        return ""
+    if not a_str:
+        return b_str
+    if not b_str:
+        return a_str
+
+    a_dt = parse_api_date(a_str)
+    b_dt = parse_api_date(b_str)
+
+    if a_dt and b_dt:
+        return a_str if a_dt > b_dt else b_str
+    if a_dt and not b_dt:
+        return a_str
+    if b_dt and not a_dt:
+        return b_str
+
+    # fallback: lexical
+    return a_str if a_str > b_str else b_str
 
 def get_certificate_status(cert_name):
     """Call your API to get certificate status and parse response."""
@@ -30,69 +103,60 @@ def get_certificate_status(cert_name):
 
     url = "https://certChecker.novadev.vip/checkCert"
 
-    files = {
-        "p12": (p12_path.name, open(p12_path, "rb"), "application/x-pkcs12"),
-        "mobileprovision": (mp_path.name, open(mp_path, "rb"), "application/octet-stream"),
-    }
-
-    data = {
-        "password": password
-    }
-
+    # Use context manager to ensure files are closed after request
     try:
-        response = requests.post(url, files=files, data=data, timeout=60)
-        response.raise_for_status()
-        result = response.json()
+        with open(p12_path, "rb") as p12f, open(mp_path, "rb") as mpf:
+            files = {
+                "p12": (p12_path.name, p12f, "application/x-pkcs12"),
+                "mobileprovision": (mp_path.name, mpf, "application/octet-stream"),
+            }
 
-        # Extract p12 and mobileprovision info
-        p12_info = result.get("p12", {})
-        mp_info = result.get("mobileprovision", {})
+            data = {
+                "password": password
+            }
 
-        # Use your logic for status emoji and status value
-        status_raw = p12_info.get("Status", "") or ""
-        status_normalized = status_raw.lower()
-
-        if status_normalized == "signed" or status_normalized == "valid":
-            final_status = "Valid"
-        elif status_normalized == "revoked":
-            final_status = "Revoked"
-        else:
-            final_status = "Unknown"
-
-        # Dates: keep exactly as returned by API
-        cert_effective = p12_info.get("Valid From", "")
-        cert_expiration = p12_info.get("Valid To", "")
-
-        mp_effective = mp_info.get("Valid From", "")
-        mp_expiration = mp_info.get("Valid To", "")
-
-        # Determine actual effective: latest of cert and mp if both exist
-        if cert_effective and mp_effective:
-            actual_effective = cert_effective if cert_effective > mp_effective else mp_effective
-        elif cert_effective:
-            actual_effective = cert_effective
-        else:
-            actual_effective = mp_effective
-
-        # Determine actual expiration: earliest of cert and mp if both exist
-        if cert_expiration and mp_expiration:
-            actual_expiration = cert_expiration if cert_expiration < mp_expiration else mp_expiration
-        elif cert_expiration:
-            actual_expiration = cert_expiration
-        else:
-            actual_expiration = mp_expiration
-
-        return {
-            "status": final_status,
-            "effective": actual_effective,
-            "expiration": actual_expiration,
-            "company": cert_name,
-            "raw": result
-        }
-
+            response = requests.post(url, files=files, data=data, timeout=60)
+            response.raise_for_status()
+            result = response.json()
     except Exception as e:
         print(f"❌ Error checking {cert_name}: {e}")
         return None
+
+    # Extract p12 and mobileprovision info
+    p12_info = result.get("p12", {})
+    mp_info = result.get("mobileprovision", {})
+
+    # Use your logic for status emoji and status value
+    status_raw = p12_info.get("Status", "") or ""
+    status_normalized = status_raw.lower()
+
+    if status_normalized == "signed" or status_normalized == "valid":
+        final_status = "Valid"
+    elif status_normalized == "revoked":
+        final_status = "Revoked"
+    else:
+        final_status = "Unknown"
+
+    # Dates: keep exactly as returned by API
+    cert_effective = p12_info.get("Valid From", "")
+    cert_expiration = p12_info.get("Valid To", "")
+
+    mp_effective = mp_info.get("Valid From", "")
+    mp_expiration = mp_info.get("Valid To", "")
+
+    # Determine actual effective: latest of cert and mp if both exist
+    actual_effective = latest_of_strings(cert_effective, mp_effective)
+
+    # Determine actual expiration: earliest of cert and mp if both exist
+    actual_expiration = earliest_of_strings(cert_expiration, mp_expiration)
+
+    return {
+        "status": final_status,
+        "effective": actual_effective,
+        "expiration": actual_expiration,
+        "company": cert_name,
+        "raw": result
+    }
 
 def parse_readme_table(readme_content):
     """Parse the markdown table from README.md."""
