@@ -30,6 +30,45 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install requests beautifulsoup4 lxml
+
+    - name: Change P12 passwords to ProStore
+      run: |
+        set -e
+
+        find . -type f -name "password.txt" | while read passfile; do
+          dir="$(dirname "$passfile")"
+          current_pass="$(cat "$passfile" | tr -d '\r\n')"
+
+          if [ "$current_pass" = "ProStore" ]; then
+            echo "✔ Already ProStore: $dir"
+            continue
+          fi
+
+          p12_file="$(ls "$dir"/*.p12 2>/dev/null || true)"
+
+          if [ -z "$p12_file" ]; then
+            echo "⚠ No .p12 found in $dir, skipping"
+            continue
+          fi
+
+          echo "🔁 Updating password for $p12_file"
+
+          tmp_p12="$dir/temp.p12"
+
+          # Re-encrypt the p12 with new password
+          openssl pkcs12 \
+            -in "$p12_file" \
+            -out "$tmp_p12" \
+            -passin pass:"$current_pass" \
+            -passout pass:ProStore \
+            -export
+
+          mv "$tmp_p12" "$p12_file"
+
+          echo "ProStore" > "$passfile"
+
+          echo "✅ Updated: $dir"
+        done
         
     - name: Check certificate statuses
       run: |
@@ -39,7 +78,7 @@ jobs:
       run: |
         git config --global user.name 'GitHub Actions'
         git config --global user.email 'actions@github.com'
-        git add README.md
+        git add .
         if git diff --quiet HEAD -- README.md; then
           echo "No changes to commit"
         else
