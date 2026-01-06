@@ -24,7 +24,7 @@ View the certificate manager [here](https://prostore-ios.github.io/cert.html)!
 ---
 
 # Recommend Certificate 
-**Commission on Elections (United politics) - ⚠️ Unknown**
+**Commission on Elections (United politics) - ✅ Signed**
 
 ---
 
