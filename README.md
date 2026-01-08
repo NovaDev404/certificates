@@ -24,7 +24,7 @@ View the certificate manager [here](https://novadev.vip/resources/certificates/)
 ---
 
 # Recommend Certificate 
-**Commission on Elections (United politics) - ✅ Signed**
+**Commission on Elections (United politics) - ❌ Revoked**
 
 ---
 
