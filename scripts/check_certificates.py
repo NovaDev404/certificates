@@ -82,22 +82,73 @@ def get_certificate_status(cert_name):
     """Call your API to get certificate status and parse response."""
     cert_dir = Path(cert_name)
 
-    # Find the .p12 and .mobileprovision files
+    # Try to find .p12 and .mobileprovision files directly in the folder
     p12_files = list(cert_dir.glob("*.p12"))
     mp_files = list(cert_dir.glob("*.mobileprovision"))
 
-    if not p12_files or not mp_files:
-        print(f"❌ Missing .p12 or .mobileprovision files for {cert_name}")
-        return None
+    p12_path = None
+    mp_path = None
+    password_file = cert_dir / "password.txt"
 
-    p12_path = p12_files[0]
-    mp_path = mp_files[0]
+    # If not found at root, search one level of subfolders and treat those subfolders as the folder
+    if not p12_files or not mp_files:
+        # look for subdirectories
+        subdirs = [d for d in cert_dir.iterdir() if d.is_dir()] if cert_dir.exists() else []
+        found = False
+        for sub in sorted(subdirs, key=lambda p: p.name):
+            sub_p12 = list(sub.glob("*.p12"))
+            sub_mp = list(sub.glob("*.mobileprovision"))
+            if sub_p12 and sub_mp:
+                p12_path = sub_p12[0]
+                mp_path = sub_mp[0]
+                # prefer password.txt inside subfolder, fall back to parent folder password.txt
+                candidate_password = sub / "password.txt"
+                password_file = candidate_password if candidate_password.exists() else (cert_dir / "password.txt")
+                found = True
+                break
+
+        if not found:
+            # if still not found, check if maybe only one type exists at root and the other in a subfolder
+            # try to pair a p12 in root with mp in a subfolder, or vice versa
+            if p12_files:
+                # try to find mp in any subfolder
+                for sub in sorted(subdirs, key=lambda p: p.name):
+                    sub_mp = list(sub.glob("*.mobileprovision"))
+                    if sub_mp:
+                        p12_path = p12_files[0]
+                        mp_path = sub_mp[0]
+                        candidate_password = sub / "password.txt"
+                        password_file = candidate_password if candidate_password.exists() else (cert_dir / "password.txt")
+                        found = True
+                        break
+            if not found and mp_files:
+                for sub in sorted(subdirs, key=lambda p: p.name):
+                    sub_p12 = list(sub.glob("*.p12"))
+                    if sub_p12:
+                        p12_path = sub_p12[0]
+                        mp_path = mp_files[0]
+                        candidate_password = sub / "password.txt"
+                        password_file = candidate_password if candidate_password.exists() else (cert_dir / "password.txt")
+                        found = True
+                        break
+
+        # If we found paired files via subfolders above, continue; otherwise we'll treat as missing
+        if not found and (not p12_files or not mp_files):
+            print(f"❌ Missing .p12 or .mobileprovision files for {cert_name}")
+            return None
+    else:
+        # both found at root
+        p12_path = p12_files[0]
+        mp_path = mp_files[0]
+        password_file = cert_dir / "password.txt"
 
     # Read password.txt or use default
-    password_file = cert_dir / "password.txt"
     if password_file.exists():
-        with open(password_file, 'r', encoding='utf-8') as f:
-            password = f.read().strip()
+        try:
+            with open(password_file, 'r', encoding='utf-8') as f:
+                password = f.read().strip()
+        except Exception:
+            password = "nezushub.vip"
     else:
         password = "nezushub.vip"
 
