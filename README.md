@@ -8,40 +8,29 @@ View the certificate manager [here](https://novadev.vip/resources/certificates/)
 ---
 
 | Company | Type | Status | Valid From | Valid To | Download |
-|:-----------------|:----:|:------:|:----------:|:--------:|:--------:|
-| Commission on Elections (Committee Supervision) | Enterprise Certificate | ❓ Unknown | — | — | [Download](https://download-directory.github.io/?url=https://github.com/NovaDev404/certificates/tree/main/Commission%20on%20Elections/Commission%20on%20Elections%20(Committee%20Supervision)) |
-| Commission on Elections (EMS Manage) | Enterprise Certificate | ❓ Unknown | — | — | [Download](https://download-directory.github.io/?url=https://github.com/NovaDev404/certificates/tree/main/Commission%20on%20Elections/Commission%20on%20Elections%20(EMS%20Manage)) |
-| Commission on Elections (Report) | Enterprise Certificate | ❓ Unknown | — | — | [Download](https://download-directory.github.io/?url=https://github.com/NovaDev404/certificates/tree/main/Commission%20on%20Elections/Commission%20on%20Elections%20(Report)) |
-| Commission on Elections (United politics) | Enterprise Certificate | ❓ Unknown | — | — | [Download](https://download-directory.github.io/?url=https://github.com/NovaDev404/certificates/tree/main/Commission%20on%20Elections/Commission%20on%20Elections%20(United%20politics)) |
-| Commission on Elections (oadav) | Enterprise Certificate | ❓ Unknown | — | — | [Download](https://download-directory.github.io/?url=https://github.com/NovaDev404/certificates/tree/main/Commission%20on%20Elections/Commission%20on%20Elections%20(oadav)) |
-| Global Takeoff, Inc (Airtel Adhoc) | Enterprise Certificate | ❓ Unknown | — | — | [Download](https://download-directory.github.io/?url=https://github.com/NovaDev404/certificates/tree/main/Global%20Takeoff,%20Inc/Global%20Takeoff,%20Inc%20(Airtel%20Adhoc)) |
-| Global Takeoff, Inc (Deeplink) | Enterprise Certificate | ❓ Unknown | — | — | [Download](https://download-directory.github.io/?url=https://github.com/NovaDev404/certificates/tree/main/Global%20Takeoff,%20Inc/Global%20Takeoff,%20Inc%20(Deeplink)) |
-| Global Takeoff, Inc (Fairplay) | Enterprise Certificate | ❓ Unknown | — | — | [Download](https://download-directory.github.io/?url=https://github.com/NovaDev404/certificates/tree/main/Global%20Takeoff,%20Inc/Global%20Takeoff,%20Inc%20(Fairplay)) |
-| Global Takeoff, Inc (HLS) | Enterprise Certificate | ❓ Unknown | — | — | [Download](https://download-directory.github.io/?url=https://github.com/NovaDev404/certificates/tree/main/Global%20Takeoff,%20Inc/Global%20Takeoff,%20Inc%20(HLS)) |
-| Global Takeoff, Inc (Scope ent distribution) | Enterprise Certificate | ❓ Unknown | — | — | [Download](https://download-directory.github.io/?url=https://github.com/NovaDev404/certificates/tree/main/Global%20Takeoff,%20Inc/Global%20Takeoff,%20Inc%20(Scope%20ent%20distribution)) |
-| Global Takeoff, Inc (ads) | Enterprise Certificate | ❓ Unknown | — | — | [Download](https://download-directory.github.io/?url=https://github.com/NovaDev404/certificates/tree/main/Global%20Takeoff,%20Inc/Global%20Takeoff,%20Inc%20(ads)) |
-| Global Takeoff, Inc (branch distribution) | Enterprise Certificate | ❓ Unknown | — | — | [Download](https://download-directory.github.io/?url=https://github.com/NovaDev404/certificates/tree/main/Global%20Takeoff,%20Inc/Global%20Takeoff,%20Inc%20(branch%20distribution)) |
-| Global Takeoff, Inc (suppose) | Enterprise Certificate | ❓ Unknown | — | — | [Download](https://download-directory.github.io/?url=https://github.com/NovaDev404/certificates/tree/main/Global%20Takeoff,%20Inc/Global%20Takeoff,%20Inc%20(suppose)) |
-| China National Heavy Duty Truck Group Co., Ltd. | Enterprise Certificate | ❌ Revoked | Apr 11 08:48:04 2025 GMT | Apr 11 08:48:04 2026 GMT | [Download](https://download-directory.github.io/?url=https://github.com/NovaDev404/certificates/tree/main/China%20National%20Heavy%20Duty%20Truck%20Group%20Co.,%20Ltd.) |
-| China Telecommunications Corporation | Enterprise Certificate | ❌ Revoked | Apr 18 08:18:10 2025 GMT | Apr 18 08:18:10 2026 GMT | [Download](https://download-directory.github.io/?url=https://github.com/NovaDev404/certificates/tree/main/China%20Telecommunications%20Corporation) |
-| Etisalat - Emirates Telecommunications Corporation | Enterprise Certificate | ❌ Revoked | Apr 9 12:50:26 2025 GMT | Feb 7 11:07:09 2026 GMT | [Download](https://download-directory.github.io/?url=https://github.com/NovaDev404/certificates/tree/main/Etisalat%20-%20Emirates%20Telecommunications%20Corporation) |
-| Guangzhou Huahan Educational & Technology Co., Ltd. | Enterprise Certificate | ❌ Revoked | Jan 24 03:35:31 2025 GMT | Jan 24 03:35:31 2026 GMT | [Download](https://download-directory.github.io/?url=https://github.com/NovaDev404/certificates/tree/main/Guangzhou%20Huahan%20Educational%20&%20Technology%20Co.,%20Ltd.) |
-| Tianjin University of Commerce | Enterprise Certificate | ❌ Revoked | Mar 17 12:52:01 2025 GMT | Mar 17 12:52:01 2026 GMT | [Download](https://download-directory.github.io/?url=https://github.com/NovaDev404/certificates/tree/main/Tianjin%20University%20of%20Commerce) |
-| Vietinbank | Enterprise Certificate | ❌ Revoked | Apr 24 10:51:01 2025 GMT | Apr 24 10:51:01 2026 GMT | [Download](https://download-directory.github.io/?url=https://github.com/NovaDev404/certificates/tree/main/Vietinbank) |
-| Wasu Media & Networking Co., Ltd (com.wasu.demo) | Enterprise Certificate | ❓ Unknown | — | — | [Download](https://download-directory.github.io/?url=https://github.com/NovaDev404/certificates/tree/main/Wasu%20Media%20&%20Network%20Co.,%20Ltd/Wasu%20Media%20&%20Networking%20Co.,%20Ltd%20(com.wasu.demo)) |
-| Wasu Media & Networking Co., Ltd (jicengzhili_create20250114) | Enterprise Certificate | ❓ Unknown | — | — | [Download](https://download-directory.github.io/?url=https://github.com/NovaDev404/certificates/tree/main/Wasu%20Media%20&%20Network%20Co.,%20Ltd/Wasu%20Media%20&%20Networking%20Co.,%20Ltd%20(jicengzhili_create20250114)) |
-| Wuling Power Corporation | Enterprise Certificate | ❌ Revoked | May 14 09:44:48 2025 GMT | May 14 09:44:48 2026 GMT | [Download](https://download-directory.github.io/?url=https://github.com/NovaDev404/certificates/tree/main/Wuling%20Power%20Corporation) |
+|:--------|:----|:------|:----------|:--------|:--------|
+| Commission on Elections (United politics) | Enterprise Certificate | ❌ Revoked | Aug 25 01:31:00 2025 GMT | Aug 25 01:31:00 2026 GMT | [Download](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2FNovaDev404%2Fcertificates%2Ftree%2Fmain%2FCommission%20on%20Elections%20%28United%20politics%29) |
+| Commission on Elections (oadav) | Enterprise Certificate | ❌ Revoked | Apr 28 11:10:01 2025 GMT | Apr 17 16:19:09 2026 GMT | [Download](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2FNovaDev404%2Fcertificates%2Ftree%2Fmain%2FCommission%20on%20Elections%20%28oadav%29) |
+| Commission on Elections (Committee Supervision) | Enterprise Certificate | ❌ Revoked | Aug 25 01:40:45 2025 GMT | Aug 25 01:40:45 2026 GMT | [Download](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2FNovaDev404%2Fcertificates%2Ftree%2Fmain%2FCommission%20on%20Elections%20%28Committee%20Supervision%29) |
+| Etisalat - Emirates Telecommunications Corporation | Enterprise Certificate | ❌ Revoked | Apr 9 12:50:26 2025 GMT | Feb 7 11:07:09 2026 GMT | [Download](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2FNovaDev404%2Fcertificates%2Ftree%2Fmain%2FEtisalat%20-%20Emirates%20Telecommunications%20Corporation) |
+| Vietinbank | Enterprise Certificate | ❌ Revoked | Apr 24 10:51:01 2025 GMT | Apr 24 10:51:01 2026 GMT | [Download](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2FNovaDev404%2Fcertificates%2Ftree%2Fmain%2FVietinbank) |
+| China Telecommunications Corporation | Enterprise Certificate | ❌ Revoked | Apr 18 08:18:10 2025 GMT | Apr 18 08:18:10 2026 GMT | [Download](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2FNovaDev404%2Fcertificates%2Ftree%2Fmain%2FChina%20Telecommunications%20Corporation) |
+| Wuling Power Corporation | Enterprise Certificate | ❌ Revoked | May 14 09:44:48 2025 GMT | May 14 09:44:48 2026 GMT | [Download](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2FNovaDev404%2Fcertificates%2Ftree%2Fmain%2FWuling+Power+Corporation) |
+| Wasu Media & Network Co., Ltd. | Enterprise Certificate | ❌ Revoked | Jan 14 07:08:55 2025 GMT | Jan 12 05:42:11 2026 GMT | [Download](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2FNovaDev404%2Fcertificates%2Ftree%2Fmain%2FWasu%20Media%20%26%20Network%20Co.%2C%20Ltd.) |
+| Global Takeoff, Inc | Enterprise Certificate | ❌ Revoked | Jun 26 20:10:06 2025 GMT | Jun 26 20:10:06 2026 GMT | [Download](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2FNovaDev404%2Fcertificates%2Ftree%2Fmain%2FGlobal%20Takeoff%2C%20Inc) |
+| Guangzhou Huahan Educational & Technology Co., Ltd. | Enterprise Certificate | ❌ Revoked | Jan 24 03:35:31 2025 GMT | Jan 24 03:35:31 2026 GMT | [Download](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2FNovaDev404%2Fcertificates%2Ftree%2Fmain%2FGuangzhou%20Huahan%20Educational%20%26%20Technology%20Co.%2C%20Ltd.) |
+| Tianjin University of Commerce | Enterprise Certificate | ❌ Revoked | Mar 17 12:52:01 2025 GMT | Mar 17 12:52:01 2026 GMT | [Download](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2FNovaDev404%2Fcertificates%2Ftree%2Fmain%2FTianjin%20University%20of%20Commerce) |
+| China National Heavy Duty Truck Group Co., Ltd. | Enterprise Certificate | ❌ Revoked | Apr 11 08:48:04 2025 GMT | Apr 11 08:48:04 2026 GMT | [Download](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2FNovaDev404%2Fcertificates%2Ftree%2Fmain%2FChina%20National%20Heavy%20Duty%20Truck%20Group%20Co.%2C%20Ltd.) |
 
 ---
 
 # Recommend Certificate 
-**Commission on Elections (Committee Supervision) - ⚠️ Unknown**
+**Commission on Elections (United politics) - ❌ Revoked**
 
 ---
 
 # Updates
 
-**12-01-26** Add new certificates and update repo structure 🎉! 
 **07-01-26** Repo has moved here 🎉!  
 **07-01-26** Sadly all of the Commission on Elections certificates have been revoked! 😭  
 **29-12-25** Add all three version of the Commission on Elections certificate 🎉!  
